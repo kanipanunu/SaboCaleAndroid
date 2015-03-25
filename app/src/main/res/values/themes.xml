@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!-- アプリケーションまたはアクティビティへ適用されるテーマ -->
+<!--  <style name="CustomActionBarTheme">
+     <item name="android:actionBarStyle">@style/MyActionBar</item>
+ </style>
+
+ アクションバーのスタイル
+ <style name="MyActionBar">
+     <item name="android:background">/item>
+ </style> -->
+</resources>

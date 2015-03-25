@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:background="#ffffff"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="horizontal"
+    android:paddingRight="5dp" >
+
+    <TextView
+        android:id="@+id/number"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:text="1"
+        android:textColorHint="#6f463b"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/kamoku_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="2"
+        android:gravity="left|center"
+        android:text="英語R"
+        android:textColor="#6f463b"
+        android:textColorHint="@color/calendar_background"
+        android:textSize="30sp" />
+
+    <LinearLayout
+        android:id="@+id/layoutkazu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/absence"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="bottom|center"
+            android:text="2"
+            android:textColor="#6f463b"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:gravity="center"
+            android:text="—"
+            android:textColor="#6f463b"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/allClassCount"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="top|center"
+            android:text="99"
+            android:textColor="#6f463b"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/sousa"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="3"
+            android:gravity="center_vertical" >
+
+            <Button
+                android:id="@+id/attendButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="@drawable/button_shape_left"
+                android:gravity="center"
+                android:text="出席"
+                android:textColor="#ffffff" />
+
+            <Button
+                android:id="@+id/absenceButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="#e14f06"
+                android:text="欠席"
+                android:textColor="#ffffff" />
+
+            <Button
+                android:id="@+id/lateButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="@drawable/button_shape_right"
+                android:text="遅刻"
+                android:textColor="#ffffff" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
