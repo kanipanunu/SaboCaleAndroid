@@ -27,7 +27,7 @@ public class Attendance extends Model {
     public static Attendance get(String date, int period,long termId) {
 
 		// TODO 自動生成されたメソッド・スタブ
-		return new Select().from(Attendance.class).where("date=? and period=? and termId=?", date, period,termId).executeSingle();
+		return new Select().from(Attendance.class).where("date=? and period=? and term=?", date, period,termId).executeSingle();
 	}
 
 	public static List<Attendance> getAll(String date) {
@@ -40,17 +40,17 @@ public class Attendance extends Model {
 	}
 
 	public static List<Attendance> get(String dateStart, String dateEnd,long termId) {
-		return new Select().from(Attendance.class).where("date>=? and date<=? and termId=?", dateStart, dateEnd,termId).execute();
+		return new Select().from(Attendance.class).where("date>=? and date<=? and term=?", dateStart, dateEnd,termId).execute();
 	}
 
 	public static List<Attendance> get(String date, long Id,long termId) {
-		return new Select().from(Attendance.class).where("date=? and kamokuId=? and termId=?", date, Id,termId).execute();
+		return new Select().from(Attendance.class).where("date=? and kamokuId=? and term=?", date, Id,termId).execute();
 	}
 
 	public static List<Attendance> get(long Id,long termId) {
-		return new Select().from(Attendance.class).where("kamokuId=? and termId=?", Id,termId).execute();
+		return new Select().from(Attendance.class).where("kamokuId=? and term=?", Id,termId).execute();
 	}
     public static List<Attendance> getTerm(long Id) {
-        return  new Select().from(Attendance.class).where("termId=?", Id).execute();
+        return  new Select().from(Attendance.class).where("term=?", Id).execute();
     }
 }

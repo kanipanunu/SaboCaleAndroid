@@ -45,7 +45,7 @@ public class AttendanceListActivity extends Activity {//
 		if (Kamoku.getAll().size() != 0) {
 			StartActivity.reload();
 			// addapterの設定。
-			List<Attendance> getList = Attendance.get(kamoku.getId(),0);//後で変数に修正
+			List<Attendance> getList = Attendance.get(kamoku.getId(),1);//後で変数に修正
 			List<Attendance> putlist = new ArrayList<Attendance>();
 			Calendar calendar = Calendar.getInstance();
 			String thisdate = String.format("%04d%02d%02d", // yyyyMMdd形式に表示

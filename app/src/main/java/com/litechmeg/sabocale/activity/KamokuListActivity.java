@@ -211,7 +211,7 @@ public class KamokuListActivity extends Activity {
 			default:
 				break;
 			}
-			attendances.addAll(Attendance.get(Integer.toString((y * 10000) + (m * 100) + (d)), x,0));//後で変数に
+			attendances.addAll(Attendance.get(Integer.toString((y * 10000) + (m * 100) + (d)), x,1));//後で変数に
 			d++;// 日付ふえるよ
 			firstDayOfWeek++;
 

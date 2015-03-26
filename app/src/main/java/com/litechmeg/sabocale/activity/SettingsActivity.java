@@ -49,12 +49,15 @@ public class SettingsActivity extends Activity {
     KamokuListArrayAdapter adapter;
     Term term;
     String termName;
-
+    EditText termEdit;
+//    SharedPreferences prefTerm = getSharedPreferences("しぇあぷり", MODE_PRIVATE);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting_cal);
-        SharedPreferences preference = getSharedPreferences("しぇあぷり", MODE_PRIVATE);
+       termEdit=(EditText)findViewById(R.id.termname);
+        termEdit.setText("ターム名を入力してください");
+
         // if (preference.getBoolean("あ", false) == false) {
         // load();
         // Term sterm = new Term();
@@ -267,7 +270,7 @@ public class SettingsActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-            dialog = new ProgressDialog(context);
+            dialog = new ProgressDialog(SettingsActivity.this);//context渡すと落ちる？？
             dialog.setTitle("時間割のよみこみをしています。");
             dialog.setMessage("保存中…");
             dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -333,6 +336,7 @@ public class SettingsActivity extends Activity {
 
                 List<Subject> subjects = Subject.getAll(firstDayOfWeek % 7);
                 //同じtermnameのものがあったら
+                termName=""+termEdit;
                 List<Term> terms=Term.get(termName);
                 if(terms.size()>=0){
 
@@ -350,7 +354,7 @@ public class SettingsActivity extends Activity {
                                     (Integer.toString((y * 10000) + (m * 100) + (d))), i,0);//後で変数に
                             attendance.kamokuId = subjects.get(i).kamokuId;
                             attendance.save();
-                            System.out.println("更新！" + attendance.kamokuId);
+                            System.out.println("更新！" + attendance.kamokuId+"ターム"+termName+" "+term.getId());
                         }
                     } else {// 無かったらつくる。※Subject参照
                         for (int i = 0; i < subjects.size(); i++) {
@@ -371,7 +375,7 @@ public class SettingsActivity extends Activity {
                                 attendance.status = 3;
                             }
                             attendance.save();
-                            System.out.println("作った！" + attendance.kamokuId);
+                            System.out.println("作った！" + attendance.kamokuId+"ターム"+termName+" "+term.getId());
                         }
                     }
                     d++;// 日付ふえるよ

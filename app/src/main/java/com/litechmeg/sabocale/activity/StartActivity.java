@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.SearchManager.OnCancelListener;
 import android.content.Context;
@@ -14,6 +15,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.View;
 
@@ -26,7 +28,7 @@ import com.litechmeg.sabocale.util.Twitter;
 /**
  * 起動画面
  */
-public class StartActivity extends Activity {
+public class StartActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

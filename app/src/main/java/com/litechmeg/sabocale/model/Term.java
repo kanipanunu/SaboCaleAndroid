@@ -20,6 +20,10 @@ public class Term extends Model {
 	// 0=start,1=end
 	public int se;
 
+    public static Term get(long id){
+        return new Select().from(Term.class).where("id=?", id).executeSingle();
+    }
+
 	public static Term get(int se) {
 		return new Select().from(Term.class).where("SE=?", se).executeSingle();
 	}
