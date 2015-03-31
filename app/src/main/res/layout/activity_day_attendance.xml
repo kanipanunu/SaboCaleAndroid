@@ -73,12 +73,13 @@
         android:layout_height="match_parent"
         android:layout_gravity="left"
         android:orientation="vertical"
-        android:background="#ffffff">
+        android:background="@color/primary_light">
 
         <ListView
             android:id="@+id/navigationDrawer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@color/primary"/>
 
 
         <Button

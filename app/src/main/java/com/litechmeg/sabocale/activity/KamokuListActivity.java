@@ -174,9 +174,9 @@ public class KamokuListActivity extends Activity {
 		List<Attendance> attendances = new ArrayList<Attendance>();
 		String dateStart;
 		String dateEnd;
-		dateStart = Term.get(0).date;
+		dateStart = Term.get(0).dateStert;
 		int firstDayOfWeek = Term.get(0).dayOfWeek;
-		dateEnd = Term.get(1).date;
+		dateEnd = Term.get(1).dateStert;
 		System.out.println(dateStart);
 		System.out.println(dateEnd);
 		int y = Integer.valueOf(dateStart) / 10000;

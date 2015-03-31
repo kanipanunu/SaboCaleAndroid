@@ -1,5 +1,9 @@
 package com.litechmeg.sabocale.activity;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -9,6 +13,8 @@ import java.util.Locale;
 import org.kazzz.util.HolidayUtil;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -24,15 +30,19 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Kamoku;
+import com.litechmeg.sabocale.model.Subject;
 import com.litechmeg.sabocale.model.Term;
+import com.litechmeg.sabocale.util.AttendanceAsyncTask;
 import com.litechmeg.sabocale.util.KamokuListArrayAdapter;
 import com.litechmeg.sabocale.util.TermListArrayAdapter;
 import com.litechmeg.sabocale.util.Twitter;
@@ -41,34 +51,41 @@ import com.litechmeg.sabocale.util.Twitter;
  * 選択した日の科目を表示する画面
  */
 public class DayAttendanceActivity extends ActionBarActivity {
-	// TextView(なんのだろう？)
+    // TextView(なんのだろう？)
     ActionBarDrawerToggle toggle;
 
     TextView dateText;
-	TextView dayOfWeekTextView;
-	// ListView関連
-	ListView kamokuListView;
+    TextView dayOfWeekTextView;
+    // ListView関連
+    ListView kamokuListView;
     ListView termListView;
-	KamokuListArrayAdapter adapter;
+    KamokuListArrayAdapter adapter;
     TermListArrayAdapter termAdapter;
-	// 日付
-	Calendar calendar;
-	// リスト(不要？)
-	List<Kamoku> kamokus;
+    // 日付
+    Calendar calendar;
+    // リスト(不要？)
+    List<Kamoku> kamokus;
 
-	String date;
+    String date;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_day_attendance);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_day_attendance);
 
-		// Viewを関連付け
-		dateText = (TextView) findViewById(R.id.date);
-		kamokuListView = (ListView) findViewById(R.id.listView1);
-		dayOfWeekTextView = (TextView) findViewById(R.id.DayOfWeek);
+        /**
+         * テスト
+         */
+        Term t = new Term();
+        t.save();
+        System.out.println(t.getId());
 
-        DrawerLayout layout = (DrawerLayout)findViewById(R.id.drawerLayout);
+        // Viewを関連付け
+        dateText = (TextView) findViewById(R.id.date);
+        kamokuListView = (ListView) findViewById(R.id.listView1);
+        dayOfWeekTextView = (TextView) findViewById(R.id.DayOfWeek);
+
+        DrawerLayout layout = (DrawerLayout) findViewById(R.id.drawerLayout);
         toggle = new ActionBarDrawerToggle(this, layout, R.string.terms, R.string.terms);
         toggle.setDrawerIndicatorEnabled(true);
         layout.setDrawerListener(toggle);
@@ -78,35 +95,35 @@ public class DayAttendanceActivity extends ActionBarActivity {
 
 
         // 選択した日付を取得
-		if (!getIntent().getExtras().get("selection").equals("a")) {
-			calendar = (Calendar) getIntent().getExtras().get("selection");
-		} else {
-			calendar = Calendar.getInstance();
-			// DateInfo dateInfo = event.getDateInfo();
-			calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-					calendar.get(Calendar.DATE));
-		}
-		// 日付を文字に変換
-		date = String.format("%04d%02d%02d", // yyyyMMdd形式に表示
-				calendar.get(Calendar.YEAR), // 年
-				calendar.get(Calendar.MONTH) + 1, // 月
-				calendar.get(Calendar.DAY_OF_MONTH)); // 日
+        if (!getIntent().getExtras().get("selection").equals("a")) {
+            calendar = (Calendar) getIntent().getExtras().get("selection");
+        } else {
+            calendar = Calendar.getInstance();
+            // DateInfo dateInfo = event.getDateInfo();
+            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DATE));
+        }
+        // 日付を文字に変換
+        date = String.format("%04d%02d%02d", // yyyyMMdd形式に表示
+                calendar.get(Calendar.YEAR), // 年
+                calendar.get(Calendar.MONTH) + 1, // 月
+                calendar.get(Calendar.DAY_OF_MONTH)); // 日
 
-		// 日にちを表示
-		dateText.setText(calendar.get(Calendar.YEAR) + "年" + (calendar.get(Calendar.MONTH) + 1) + "月"
-				+ calendar.get(Calendar.DAY_OF_MONTH) + "日");// "日で曜日" +
-																// (calendar.get(Calendar.DAY_OF_WEEK)));
-		// 曜日を表示
-		dayOfWeekTextView.setText(new SimpleDateFormat("E", Locale.JAPAN).format(calendar.getTime()));
+        // 日にちを表示
+        dateText.setText(calendar.get(Calendar.YEAR) + "年" + (calendar.get(Calendar.MONTH) + 1) + "月"
+                + calendar.get(Calendar.DAY_OF_MONTH) + "日");// "日で曜日" +
+        // (calendar.get(Calendar.DAY_OF_WEEK)));
+        // 曜日を表示
+        dayOfWeekTextView.setText(new SimpleDateFormat("E", Locale.JAPAN).format(calendar.getTime()));
 
-		// ListViewにAdapterをセット
-		adapter = new KamokuListArrayAdapter(this, R.layout.activity_kamoku_list, date, 0);
-        termAdapter = new TermListArrayAdapter(this,R.layout.activity_kamoku_list);
-        List<Term> terms=Term.getAll();
+        // ListViewにAdapterをセット
+        adapter = new KamokuListArrayAdapter(this, R.layout.activity_kamoku_list, date, 0);
+        termAdapter = new TermListArrayAdapter(this, R.layout.activity_kamoku_list);
+        List<Term> terms = Term.getAll();
         for (int i = 0; i < terms.size(); i++) {
             termAdapter.add(terms.get(i));
         }
-        termListView = (ListView)findViewById(R.id.navigationDrawer);
+        termListView = (ListView) findViewById(R.id.navigationDrawer);
         termListView.setAdapter(termAdapter);
         termListView.setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
@@ -119,8 +136,8 @@ public class DayAttendanceActivity extends ActionBarActivity {
             }
         });
 
-		kamokuListView.setAdapter(adapter);
-		kamokuListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+        kamokuListView.setAdapter(adapter);
+        kamokuListView.setOnItemLongClickListener(new OnItemLongClickListener() {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View parent, final int position, long arg3) {
@@ -221,80 +238,197 @@ public class DayAttendanceActivity extends ActionBarActivity {
 
         });
 
-		// もし休日でなければ
+        // もし休日でなければ
 
-		if (HolidayUtil.getHolidayName(calendar).equals("")) {
+        if (HolidayUtil.getHolidayName(calendar).equals("")) {
 
-			// その日の全科目を取得
-			kamokus = new ArrayList<Kamoku>();
-			List<Attendance> attendances = Attendance.getAll(date);
-			for (int i = 0; i < attendances.size(); i++) {
-				// その日のSubjectで、i時限目の出席がすでにあれば取得
-				Attendance attendance = Attendance.get(date, i,1);//後で変数に
+            // その日の全科目を取得
+            kamokus = new ArrayList<Kamoku>();
+            List<Attendance> attendances = Attendance.getAll(date);
+            for (int i = 0; i < attendances.size(); i++) {
+                // その日のSubjectで、i時限目の出席がすでにあれば取得
+                Attendance attendance = Attendance.get(date, i, 1);//後で変数に
 
-				Log.d("date", "" + attendance.date);
-				Log.d("period", "" + attendance.period);
-				Log.d("status", "" + attendance.status);
+                Log.d("date", "" + attendance.date);
+                Log.d("period", "" + attendance.period);
+                Log.d("status", "" + attendance.status);
 
-				// その日の科目を習得してadapterに追加
-				Kamoku kamoku = Kamoku.load(Kamoku.class, attendance.kamokuId);
-				kamokus.add(kamoku);
-				Log.d("name", kamoku.name);
-			}
+                // その日の科目を習得してadapterに追加
+                Kamoku kamoku = Kamoku.load(Kamoku.class, attendance.kamokuId);
+                kamokus.add(kamoku);
+                Log.d("name", kamoku.name);
+            }
 
-			adapter.addAll(kamokus);
-		}
-	}
+            adapter.addAll(kamokus);
+        }
+    }
 
-    public void addTerm(View v){
+    public void addTerm(View v) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        View parent =getLayoutInflater().inflate(R.layout.dialog_term_edit,(ViewGroup)findViewById(R.id.layout_Dialog));
+        View parent = getLayoutInflater().inflate(R.layout.dialog_term_edit, (ViewGroup) findViewById(R.id.layout_Dialog));
         parent.setBackgroundColor(Color.rgb(0xff, 0xff, 0xff));
 
-        final EditText editTerm=(EditText)parent.findViewById(R.id.editTermName);
-        Button saveTerm=(Button)parent.findViewById(R.id.saveButton);
+        final EditText editTerm = (EditText) parent.findViewById(R.id.editTermName);
+        final EditText editYear1 = (EditText) parent.findViewById(R.id.year1);
+        final EditText editYear2 = (EditText) parent.findViewById(R.id.year2);
+        Button saveTerm = (Button) parent.findViewById(R.id.saveButton);
+        Button editSubject = (Button) parent.findViewById(R.id.editButton);
 
+        final Spinner spinnerMonth1 = (Spinner) parent.findViewById(R.id.spinner2);
+        final Spinner spinnerDate1 = (Spinner) parent.findViewById(R.id.spinner3);
+
+        final Spinner spinnerMonth2 = (Spinner) parent.findViewById(R.id.spinner5);
+        final Spinner spinnerDate2 = (Spinner) parent.findViewById(R.id.spinner6);
         builder.setView(parent);
         final AlertDialog dialog = builder.show();
 
+
+        List<String> months = new ArrayList<String>();
+        for (int i = 0; i < 12; i++) {
+            months.add((i + 1) + "");
+        }
+        List<String> dates = new ArrayList<String>();
+        for (int i = 0; i < 31; i++) {
+            dates.add((i + 1) + "");
+        }
+        ArrayAdapter<String> spAdapterM = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, months);
+        spAdapterM.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerMonth1.setAdapter(spAdapterM);
+        spinnerMonth2.setAdapter(spAdapterM);
+        ArrayAdapter<String> spAdapterD = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dates);
+        spAdapterM.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDate1.setAdapter(spAdapterD);
+        spinnerDate2.setAdapter(spAdapterD);
+        editSubject.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String termName = editTerm.getText().toString();
+                Term term = new Term();
+                term.name=termName;
+                term.save();
+                long termId = term.getId();
+
+                load(termName);
+                Intent intent = new Intent(DayAttendanceActivity.this, EditActivity.class);
+                intent.putExtra("タームの生成", termId);
+                startActivityForResult(intent, 1);
+            }
+        });
         saveTerm.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                String termName=editTerm.getText().toString();
-                Term term = new Term();
-                term.name = termName;
-                term.save();
+                String dateStert,dateEnd;
+                Term term = Term.get(editTerm.getText().toString());
+                String year1 = editYear1.getText().toString();
+                long month1 = spinnerMonth1.getSelectedItemId() + 1;
+                long date1 = spinnerDate1.getSelectedItemId() + 1;
 
-                dialog.dismiss();
+
+                String year2 = editYear2.getText().toString();
+                long month2 = spinnerMonth2.getSelectedItemId() + 1;
+                long date2 = spinnerDate2.getSelectedItemId() + 1;
+                dateStert=String.format("%1$s%2$02d%3$02d",year1,month1,date1);
+                dateEnd=String.format("%1$s%2$02d%3$02d",year2,month2,date2);
+                term.dateStert=dateStert;
+                term.dateEnd=dateEnd;
+                term.save();
+                ProgressDialog asyncTskDialog = new ProgressDialog(getApplicationContext());
+                asyncTskDialog.setTitle("時間割のよみこみをしています。");
+                asyncTskDialog.setMessage("保存中…");
+                asyncTskDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                //asyncTskDialog.setMax(100);
+                //asyncTskDialog.setProgress(0);
+                asyncTskDialog.show();
+                new AttendanceAsyncTask(getApplicationContext(), term).execute("");
+
             }
         });
 
-        /*
-        Term term = new Term();
-        term.name = ~~~;
-        term.save();
-        */
     }
 
-	/**
-	 * Twitterに投稿
-	 */
-	public void Tweet(View v) {
+    /**
+     * Twitterに投稿
+     */
+    public void Tweet(View v) {
 
-		// 投稿する文章を作成
-		String tweetText = calendar.get(Calendar.YEAR) + "年" + ((calendar.get(Calendar.MONTH) + 1)) + "月"
-				+ calendar.get(Calendar.DAY_OF_MONTH) + "日"
-				+ new SimpleDateFormat("EEEE", Locale.JAPAN).format(calendar.getTime());
-		System.out.println(kamokus.size() + ": size");
-		for (int i = 0; i < kamokus.size(); i++) {
-			// i番目のsubjectを取得
-			Kamoku kamoku = kamokus.get(i);
+        // 投稿する文章を作成
+        String tweetText = calendar.get(Calendar.YEAR) + "年" + ((calendar.get(Calendar.MONTH) + 1)) + "月"
+                + calendar.get(Calendar.DAY_OF_MONTH) + "日"
+                + new SimpleDateFormat("EEEE", Locale.JAPAN).format(calendar.getTime());
+        System.out.println(kamokus.size() + ": size");
+        for (int i = 0; i < kamokus.size(); i++) {
+            // i番目のsubjectを取得
+            Kamoku kamoku = kamokus.get(i);
 
-			tweetText = tweetText + "\n" + (i + 1) + ":" + kamoku.name;
-		}
-		Twitter.tweet(this, tweetText + "\nさぼらないでね！！");
-	}
+            tweetText = tweetText + "\n" + (i + 1) + ":" + kamoku.name;
+        }
+        Twitter.tweet(this, tweetText + "\nさぼらないでね！！");
+    }
+
+    public void load(String termName) {
+        try {
+            // ファイルの読み込み
+            InputStream is = getResources().openRawResource(R.raw.zikanwari);
+            BufferedReader brf = new BufferedReader(new InputStreamReader(is));
+
+            int period = 0; // 時限の数
+            String line; // 読み込んだファイルの行
+
+            while ((line = brf.readLine()) != null) {
+
+                // 一行ごとに時間割の読み込み
+                String[] jikan = line.split(",");
+
+                System.out.println("len: " + jikan.length);
+                for (int i = 0; i < jikan.length; i++) {
+                    Kamoku kamoku;
+
+                    // もし空白でなければ(空白はスルー)
+                    if (!jikan[i].equals("")) {
+                        kamoku = Kamoku.get(jikan[i]);
+                        // 名前が jikan[j] のKamokuをロード
+                        // なければ新しく作る
+                        if (kamoku == null) {
+                            kamoku = new Kamoku();
+                            kamoku.name = jikan[i];
+                            kamoku.save();
+                        }
+                        Log.d(kamoku.name, jikan[i]);
+                    } else {
+                        kamoku = Kamoku.get("free");
+                        if (kamoku == null) {
+                            kamoku = new Kamoku();
+                            kamoku.name = "free";
+                            kamoku.save();
+                        }
+                    }
+
+                    // new Subject(name, dayOfWeek, period);
+                    if (Term.get(termName)!=null && Subject.get((i + 1), period, Term.get(termName).getId()) != null) {
+
+                    } else {
+                        Subject subject = new Subject(); // 新しいSubjectを作成
+                        subject.name = kamoku.name; // ファイルから取得した科目名をセット
+                        subject.dayOfWeek = i + 1; // 曜日をセット
+                        subject.period = period; // 時限をセット
+                        subject.kamokuId = kamoku.getId(); // 科目のIDをセット
+                        subject.termId = Term.get(termName).getId();
+                        subject.save(); // Subjectの保存
+                    }
+
+                }
+
+                // 次の時限に進む
+                period++;
+            }
+        } catch (IOException e) {
+            e.getStackTrace();
+        }
+
+    }
+
 
     public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onPostCreate(savedInstanceState, persistentState);

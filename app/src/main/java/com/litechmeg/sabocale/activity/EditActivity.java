@@ -2,6 +2,7 @@ package com.litechmeg.sabocale.activity;
 
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Kamoku;
 import com.litechmeg.sabocale.model.Subject;
+import com.litechmeg.sabocale.model.Term;
 import com.litechmeg.sabocale.util.EditListArrayAdapter;
 
 import java.util.List;
@@ -48,12 +50,18 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
 	 */
 	ViewPager mViewPager;
 
+    Term term;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edit);
 
-		// Set up the action bar.
+        Intent intent=getIntent();
+        long Id=intent.getLongExtra("タームの生成",0);
+        term=Term.get(Id);
+
+        // Set up the action bar.
 		final ActionBar actionBar = getSupportActionBar();
         try{
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -129,6 +137,7 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
 			Fragment fragment = new DummySectionFragment();
 			Bundle args = new Bundle();
 			args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position);
+            args.putLong(DummySectionFragment.ARG_TERM_ID,term.getId());
 			fragment.setArguments(args);
 			return fragment;
 		}
@@ -183,8 +192,6 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
 					// 現在位置のKamokuを取得して名前を表示
 					final Subject subject = (Subject) getListAdapter().getItem(position);
 					EditKamokuName.setText(subject.name);
-
-					// その科目の数を取ってくる
 
 					// あらーとダイアログの生成
 					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
@@ -241,6 +248,7 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
 		}
 
 		public static final String ARG_SECTION_NUMBER = "section_number";
+        public  static final String ARG_TERM_ID="term_Id";
 
 		public DummySectionFragment() {
 		}
@@ -249,11 +257,13 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_edit_dummy, container, false);
 
-			final EditListArrayAdapter adapter = new EditListArrayAdapter(this.getActivity(),
+            Bundle args=getArguments();
+
+            final EditListArrayAdapter adapter = new EditListArrayAdapter(this.getActivity(),
 					R.layout.fragment_edit_dummy);
 			System.out.println(((Integer) getArguments().get(ARG_SECTION_NUMBER) + 1) + "");
 			// 曜日ごとにじかんわりをとってくる。（int dayOfWeek）
-			List<Subject> subjects = Subject.getAll((Integer) getArguments().get(ARG_SECTION_NUMBER) + 1);
+			List<Subject> subjects = Subject.getAll((Integer) getArguments().get(ARG_SECTION_NUMBER) + 1,args.getLong(ARG_TERM_ID));
 			for (int i = 0; i < subjects.size(); i++) {
 				System.out.println((i + 1) + "時間目" + subjects.get(i).name);
 			}
@@ -267,5 +277,8 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
 
 		}
 	}
+    public void back(View v){
+        finish();
+    }
 
 }

@@ -19,6 +19,8 @@ public class Subject extends Model {
 	public int period;
 	@Column(name = "status")
 	public int status;
+    @Column(name = "TermId")
+    public long termId;
 
 	public String getName() {
 		return name;
@@ -28,29 +30,16 @@ public class Subject extends Model {
 		this.name = name;
 	}
 
-	public int getDayOfWeek() {
-		return dayOfWeek;
+	public static List<Subject> getAll(long termId) {
+		return new Select().from(Subject.class).where("termId=?",termId).execute();
 	}
 
-	public void setDayOfWeek(int dayOfWeek) {
-		this.dayOfWeek = dayOfWeek;
+	public static List<Subject> getAll(int dayOfWeek,long termId) {
+		return new Select().from(Subject.class).where("dayOfWeek = ? and termId=?", dayOfWeek,termId).execute();
 	}
-
-	public int getPeriod() {
-		return period;
-	}
-
-	public void setPeriod(int period) {
-		this.period = period;
-	}
-
-	public static List<Subject> getAll() {
-		return new Select().from(Subject.class).execute();
-	}
-
-	public static List<Subject> getAll(int dayOfWeek) {
-		return new Select().from(Subject.class).where("dayOfWeek = ?", dayOfWeek).execute();
-	}
+    public static Subject get(int dayOfWeek,int period, long termId){
+        return new Select().from(Subject.class).where("dayOfWeek = ? and period = ? and termId = ?",dayOfWeek,period,termId).executeSingle();
+    }
 
 	public static void deleteAll() {
 		List<Subject> subjects = new Select().from(Subject.class).execute();
