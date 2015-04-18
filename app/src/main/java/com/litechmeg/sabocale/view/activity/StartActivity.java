@@ -1,4 +1,4 @@
-package com.litechmeg.sabocale.activity;
+package com.litechmeg.sabocale.view.activity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.SearchManager.OnCancelListener;
 import android.content.Context;
 import android.content.Intent;

@@ -1,20 +1,9 @@
-package com.litechmeg.sabocale.activity;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-
-import org.kazzz.util.HolidayUtil;
+package com.litechmeg.sabocale.view.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -47,6 +36,18 @@ import com.litechmeg.sabocale.util.KamokuListArrayAdapter;
 import com.litechmeg.sabocale.util.TermListArrayAdapter;
 import com.litechmeg.sabocale.util.Twitter;
 
+import org.kazzz.util.HolidayUtil;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+
 /**
  * 選択した日の科目を表示する画面
  */
@@ -68,17 +69,17 @@ public class DayAttendanceActivity extends ActionBarActivity {
 
     String date;
 
+    SharedPreferences pref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day_attendance);
+        pref = getSharedPreferences("TermSellect", MODE_PRIVATE);
 
         /**
          * テスト
          */
-        Term t = new Term();
-        t.save();
-        System.out.println(t.getId());
+
 
         // Viewを関連付け
         dateText = (TextView) findViewById(R.id.date);
@@ -125,18 +126,28 @@ public class DayAttendanceActivity extends ActionBarActivity {
         }
         termListView = (ListView) findViewById(R.id.navigationDrawer);
         termListView.setAdapter(termAdapter);
+        termListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Term term = termAdapter.getItem(position);
+                SharedPreferences.Editor editor=pref.edit();
+                editor.putLong("TermId",term.getId());
+                editor.apply();
+            }
+        });
         termListView.setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Term term = termAdapter.getItem(position);
                 term.delete();
-
-
+                termAdapter.remove(term);
+                termListView.setAdapter(termAdapter);
                 return true;
             }
         });
 
         kamokuListView.setAdapter(adapter);
+
         kamokuListView.setOnItemLongClickListener(new OnItemLongClickListener() {
 
             @Override
@@ -305,12 +316,17 @@ public class DayAttendanceActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 String termName = editTerm.getText().toString();
-                Term term = new Term();
-                term.name=termName;
-                term.save();
+
+                Term term = Term.get(termName);
+                if (term == null) {
+                    term = new Term();
+                    term.name = termName;
+                    term.save();
+                }
+
                 long termId = term.getId();
 
-                load(termName);
+                load(term);
                 Intent intent = new Intent(DayAttendanceActivity.this, EditActivity.class);
                 intent.putExtra("タームの生成", termId);
                 startActivityForResult(intent, 1);
@@ -319,7 +335,7 @@ public class DayAttendanceActivity extends ActionBarActivity {
         saveTerm.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                String dateStert,dateEnd;
+                String dateStert, dateEnd;
                 Term term = Term.get(editTerm.getText().toString());
                 String year1 = editYear1.getText().toString();
                 long month1 = spinnerMonth1.getSelectedItemId() + 1;
@@ -329,10 +345,10 @@ public class DayAttendanceActivity extends ActionBarActivity {
                 String year2 = editYear2.getText().toString();
                 long month2 = spinnerMonth2.getSelectedItemId() + 1;
                 long date2 = spinnerDate2.getSelectedItemId() + 1;
-                dateStert=String.format("%1$s%2$02d%3$02d",year1,month1,date1);
-                dateEnd=String.format("%1$s%2$02d%3$02d",year2,month2,date2);
-                term.dateStert=dateStert;
-                term.dateEnd=dateEnd;
+                dateStert = String.format("%1$s%2$02d%3$02d", year1, month1, date1);
+                dateEnd = String.format("%1$s%2$02d%3$02d", year2, month2, date2);
+                term.dateStert = dateStert;
+                term.dateEnd = dateEnd;
                 term.save();
                 ProgressDialog asyncTskDialog = new ProgressDialog(getApplicationContext());
                 asyncTskDialog.setTitle("時間割のよみこみをしています。");
@@ -367,7 +383,7 @@ public class DayAttendanceActivity extends ActionBarActivity {
         Twitter.tweet(this, tweetText + "\nさぼらないでね！！");
     }
 
-    public void load(String termName) {
+    public void load(Term term) {
         try {
             // ファイルの読み込み
             InputStream is = getResources().openRawResource(R.raw.zikanwari);
@@ -393,6 +409,7 @@ public class DayAttendanceActivity extends ActionBarActivity {
                         if (kamoku == null) {
                             kamoku = new Kamoku();
                             kamoku.name = jikan[i];
+                            kamoku.termId=term.getId();
                             kamoku.save();
                         }
                         Log.d(kamoku.name, jikan[i]);
@@ -401,23 +418,24 @@ public class DayAttendanceActivity extends ActionBarActivity {
                         if (kamoku == null) {
                             kamoku = new Kamoku();
                             kamoku.name = "free";
+                            kamoku.termId=term.getId();
                             kamoku.save();
                         }
                     }
 
                     // new Subject(name, dayOfWeek, period);
-                    if (Term.get(termName)!=null && Subject.get((i + 1), period, Term.get(termName).getId()) != null) {
+                    Subject s = Subject.get(i + 1, period, term.getId());
 
-                    } else {
+                    if (s != null) { } // TODO
+                    else {
                         Subject subject = new Subject(); // 新しいSubjectを作成
                         subject.name = kamoku.name; // ファイルから取得した科目名をセット
                         subject.dayOfWeek = i + 1; // 曜日をセット
                         subject.period = period; // 時限をセット
                         subject.kamokuId = kamoku.getId(); // 科目のIDをセット
-                        subject.termId = Term.get(termName).getId();
+                        subject.termId = term.getId();
                         subject.save(); // Subjectの保存
                     }
-
                 }
 
                 // 次の時限に進む

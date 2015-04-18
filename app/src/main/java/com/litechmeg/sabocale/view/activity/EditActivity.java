@@ -1,8 +1,8 @@
-package com.litechmeg.sabocale.activity;
+package com.litechmeg.sabocale.view.activity;
 
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -49,6 +49,7 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
 	 * The {@link android.support.v4.view.ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
+    SharedPreferences pref;
 
     Term term;
 
@@ -56,7 +57,7 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edit);
-
+        pref=getSharedPreferences("TermSellect",MODE_PRIVATE);
         Intent intent=getIntent();
         long Id=intent.getLongExtra("タームの生成",0);
         term=Term.get(Id);
@@ -209,6 +210,7 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
 							} else {
 								Kamoku kamoku = new Kamoku();
 								kamoku.name = subject.name;
+                                kamoku.termId=subject.termId;
 								kamoku.save();
 							}
 							subject.kamokuId = (long) Kamoku.get(subject.name).getId();
@@ -264,9 +266,6 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
 			System.out.println(((Integer) getArguments().get(ARG_SECTION_NUMBER) + 1) + "");
 			// 曜日ごとにじかんわりをとってくる。（int dayOfWeek）
 			List<Subject> subjects = Subject.getAll((Integer) getArguments().get(ARG_SECTION_NUMBER) + 1,args.getLong(ARG_TERM_ID));
-			for (int i = 0; i < subjects.size(); i++) {
-				System.out.println((i + 1) + "時間目" + subjects.get(i).name);
-			}
 			if (subjects != null) {
 				adapter.addAll(subjects);
 			}
@@ -274,10 +273,13 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
 			setListAdapter(adapter);
 
 			return rootView;
-
 		}
 	}
     public void back(View v){
+        List<Subject> subjects=Subject.getAll(pref.getLong("TermId",1));
+        for(int i=0;i<subjects.size();i++){
+            subjects.get(i).save();
+        }
         finish();
     }
 

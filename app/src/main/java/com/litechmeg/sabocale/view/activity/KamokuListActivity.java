@@ -1,4 +1,4 @@
-package com.litechmeg.sabocale.activity;
+package com.litechmeg.sabocale.view.activity;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -7,6 +7,7 @@ import java.util.List;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -38,6 +39,8 @@ public class KamokuListActivity extends Activity {
 	// ListView関連
 	ListView listview;
 	KamokuListArrayAdapter adapter;
+
+    SharedPreferences pref = getSharedPreferences("TermSellect", this.MODE_PRIVATE);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
