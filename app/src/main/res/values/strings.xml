@@ -34,5 +34,9 @@
     <string name="title_activity_attendance_list">AttendanceListActivity</string>
     <string name="title_activity_first">FirstActivity</string>
     <string name="terms">"ターム"</string>
+    <string name="title_section1">あ</string>
+    <string name="title_section2">あ</string>
+    <string name="title_section3">あ</string>
+    <string name="title_section4">あ</string>
 
 </resources>
