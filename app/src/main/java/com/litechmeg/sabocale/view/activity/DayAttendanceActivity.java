@@ -87,6 +87,7 @@ public class DayAttendanceActivity extends ActionBarActivity {
             getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         } catch (Exception e) {
         }
+        getSupportActionBar().getTitle();
 
         mainTabPagerAdapter = new MainTabPagerAdapter(
                 getSupportFragmentManager());

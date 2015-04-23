@@ -15,27 +15,26 @@ public class MainTabPagerAdapter extends FragmentPagerAdapter{
     public MainTabPagerAdapter(FragmentManager fm){
         super(fm);
     }
-    Fragment dayAttendance1=new DayAttendanceView();
-    Fragment dayAttendance2=new DayAttendanceView();
-    Fragment dayAttendance3=new DayAttendanceView();
-    Fragment dayAttendance4=new DayAttendanceView();
+    Fragment dayAttendance=new DayAttendanceView();
+    Fragment calender=new DayAttendanceView();
+    Fragment kamokuList=new DayAttendanceView();
+    Fragment settings=new DayAttendanceView();
 
     @Override
     public Fragment getItem(int i) {
         switch (i){
             case 0:
-                return dayAttendance1;
+                return dayAttendance;
 
             case 1:
-                return dayAttendance2;
+                return calender;
 
             case 2:
-                return dayAttendance3;
+                return kamokuList;
 
             case 3:
-                return dayAttendance4;
+                return settings;
 
-            //TODO returnfragmentする。
         }
         return null;
     }
@@ -45,16 +44,17 @@ public class MainTabPagerAdapter extends FragmentPagerAdapter{
     public int getCount() {
         return 4;
     }
+
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "1";
+                return "今日の";
             case 1:
-                return"2";
+                return"カレンダー";
             case 2:
-                return "3";
+                return "見る";
             case 3:
-                return "4";
+                return "設定！";
         }
         return null;
     }
