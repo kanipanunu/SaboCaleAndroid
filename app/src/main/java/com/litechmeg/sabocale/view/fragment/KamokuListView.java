@@ -1,5 +1,6 @@
 package com.litechmeg.sabocale.view.fragment;
 
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,7 @@ import com.litechmeg.sabocale.R;
 /**
  * Created by megukanipan on 2015/04/23.
  */
-public class KamokuListView {
+public class KamokuListView extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // 第３引数のbooleanは"container"にreturnするViewを追加するかどうか
         //trueにすると最終的なlayoutに再度、同じView groupが表示されてしまうのでfalseでOKらしい

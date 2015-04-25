@@ -93,6 +93,25 @@ public class DayAttendanceActivity extends ActionBarActivity {
                 getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mainTabPagerAdapter);
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                try{
+                    getSupportActionBar().setSelectedNavigationItem(position);
+                }catch (Exception e){
+
+                }
+            }
+        });
+        // getCountでタブの数を指定。
+        for (int i = 0; i < mainTabPagerAdapter.getCount(); i++) {
+            // Actionbarにタブを追加。
+            // getPageTitleでタブのタイトルを表示
+            getSupportActionBar().addTab(getSupportActionBar().newTab()
+                    .setText(mainTabPagerAdapter.getPageTitle(i))
+                    .setTabListener(this));
+        }
+
 
         // 選択した日付を取得
         if (!getIntent().getExtras().get("selection").equals("a")) {

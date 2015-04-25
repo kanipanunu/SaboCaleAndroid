@@ -12,6 +12,7 @@ import com.litechmeg.sabocale.R;
  * Created by megukanipan on 2015/04/19.
  */
 public class DayAttendanceView extends Fragment {
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         // 第３引数のbooleanは"container"にreturnするViewを追加するかどうか
