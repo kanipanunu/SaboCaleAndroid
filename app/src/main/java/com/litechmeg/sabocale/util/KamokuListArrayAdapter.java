@@ -104,99 +104,101 @@ public class KamokuListArrayAdapter extends ArrayAdapter<Kamoku> {
 			kamokuNumTextView.setVisibility(View.GONE);
 		}
 
-		// しーくばーについて。
 		if (mMode == 0) {
-			// 現在位置の出席を取得(nullはあり得ない)
-			final Attendance attendance = Attendance.get(date, position,0);//後で変数に
+            // 現在位置の出席を取得(nullはあり得ない)
+            if (Attendance.get(date, position, 1) != null) {
+                final Attendance attendance = Attendance.get(date, position, 0);//後で変数に
 
-			// 出席
-			attendButton.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					attendance.status = 0;
-					attendance.save();
-					attendButton.setAlpha(1f);
-					absenceButton.setAlpha(0.3f);
-					lateButton.setAlpha(0.3f);
-				}
-			});
-			absenceButton.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					attendance.status = 1;
-					attendance.save();
-					attendButton.setAlpha(0.3f);
-					absenceButton.setAlpha(1f);
-					lateButton.setAlpha(0.3f);
+                // 出席
+                attendButton.setOnClickListener(new OnClickListener() {
+                    public void onClick(View v) {
+                        attendance.status = Attendance.STATUS_ATTENDANCE;
+                        attendance.save();
+                        attendButton.setAlpha(1f);
+                        absenceButton.setAlpha(0.3f);
+                        lateButton.setAlpha(0.3f);
+                    }
+                });
+                absenceButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        attendance.status = Attendance.STATUS_ABSENT;
+                        attendance.save();
+                        attendButton.setAlpha(0.3f);
+                        absenceButton.setAlpha(1f);
+                        lateButton.setAlpha(0.3f);
 
-				}
-			});
-			lateButton.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					attendance.status = 2;
-					attendance.save();
-					attendButton.setAlpha(0.3f);
-					absenceButton.setAlpha(0.3f);
-					lateButton.setAlpha(1f);
-				}
-			});
+                    }
+                });
+                lateButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        attendance.status = Attendance.STATUS_LATE;
+                        attendance.save();
+                        attendButton.setAlpha(0.3f);
+                        absenceButton.setAlpha(0.3f);
+                        lateButton.setAlpha(1f);
+                    }
+                });
 
-			// seekbarに現在のステータスを設定
-			if (attendance.status == 3) {
-				attendButton.setAlpha(1f);
-				absenceButton.setAlpha(0.3f);
-				lateButton.setAlpha(0.3f);
+                // seekbarに現在のステータスを設定
+                if (attendance.status == Attendance.STATUS_MADA) {
+                    attendButton.setAlpha(1f);
+                    absenceButton.setAlpha(0.3f);
+                    lateButton.setAlpha(0.3f);
 
-				Calendar calendar = Calendar.getInstance();
-				String thisdate = String.format("%04d%02d%02d", // yyyyMMdd形式に表示
-						calendar.get(Calendar.YEAR), // 年
-						calendar.get(Calendar.MONTH) + 1, // 月
-						calendar.get(Calendar.DAY_OF_MONTH)); // 日
-				if (thisdate.compareTo(attendance.date) >= 0) {
-					attendance.status = 0;// 今日よりも前で未選択のがあったら出席扱い。
-					attendance.save();
-				} else {
-					attendButton.setClickable(false);
-					absenceButton.setClickable(false);
-					lateButton.setClickable(false);
-				}
+                    Calendar calendar = Calendar.getInstance();
+                    String thisdate = String.format("%04d%02d%02d", // yyyyMMdd形式に表示
+                            calendar.get(Calendar.YEAR), // 年
+                            calendar.get(Calendar.MONTH) + 1, // 月
+                            calendar.get(Calendar.DAY_OF_MONTH)); // 日
+                    if (thisdate.compareTo(attendance.date) >= 0) {
+                        attendance.status = Attendance.STATUS_ATTENDANCE;// 今日よりも前で未選択のがあったら出席扱い。
+                        attendance.save();
+                    } else {
+                        attendButton.setClickable(false);
+                        absenceButton.setClickable(false);
+                        lateButton.setClickable(false);
+                    }
 
-			} else if (attendance.status == 4) {
-				convertView.setAlpha(0.3f);
-				absenceButton.setClickable(false);
-				attendButton.setClickable(false);
-				lateButton.setClickable(false);
-				// TODO positionのListViewを取ってきてsetalphaして半透明に。
-				nameTextView.setText("休講（" + kamoku.name + "）");
-				String name = "休講（" + kamoku.name + "）";
-				if (name.length() >= 4) {
-					nameTextView.setTextSize(100 / (name).length());
-				}
-			} else {
+                } else if (attendance.status == 4) {
+                    convertView.setAlpha(0.3f);
+                    absenceButton.setClickable(false);
+                    attendButton.setClickable(false);
+                    lateButton.setClickable(false);
+                    // TODO positionのListViewを取ってきてsetalphaして半透明に。
+                    nameTextView.setText("休講（" + kamoku.name + "）");
+                    String name = "休講（" + kamoku.name + "）";
+                    if (name.length() >= 4) {
+                        nameTextView.setTextSize(100 / (name).length());
+                    }
+                } else {
 
-			}
+                }
 
-			if (attendance.status == 0) {
-				convertView.setAlpha(1f);
-				attendButton.setAlpha(1f);
-				absenceButton.setAlpha(0.3f);
-				lateButton.setAlpha(0.3f);
-			} else if (attendance.status == 1) {
-				attendButton.setAlpha(0.3f);
-				absenceButton.setAlpha(1f);
-				lateButton.setAlpha(0.3f);
-			} else if (attendance.status == 2) {
-				attendButton.setAlpha(0.3f);
-				absenceButton.setAlpha(0.3f);
-				lateButton.setAlpha(1f);
-			}
+                if (attendance.status == 0) {
+                    convertView.setAlpha(1f);
+                    attendButton.setAlpha(1f);
+                    absenceButton.setAlpha(0.3f);
+                    lateButton.setAlpha(0.3f);
+                } else if (attendance.status == 1) {
+                    attendButton.setAlpha(0.3f);
+                    absenceButton.setAlpha(1f);
+                    lateButton.setAlpha(0.3f);
+                } else if (attendance.status == 2) {
+                    attendButton.setAlpha(0.3f);
+                    absenceButton.setAlpha(0.3f);
+                    lateButton.setAlpha(1f);
+                }
 
-		}
-		if (kamoku.name.equals("free")) {
-			convertView.setVisibility(View.INVISIBLE);
-		}
+            }
+            if (kamoku.name.equals("free")) {
+                convertView.setVisibility(View.INVISIBLE);
+            }
 
-		// ここで作ったViewを返す
+
+        }
+        // ここで作ったViewを返す
 		return convertView;
 
 	}

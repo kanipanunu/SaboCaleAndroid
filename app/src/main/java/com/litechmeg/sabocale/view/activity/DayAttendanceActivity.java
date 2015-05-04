@@ -1,6 +1,5 @@
 package com.litechmeg.sabocale.view.activity;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -12,6 +11,7 @@ import android.os.PersistableBundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
@@ -29,6 +29,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.litechmeg.sabocale.R;
+import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Kamoku;
 import com.litechmeg.sabocale.model.Subject;
 import com.litechmeg.sabocale.model.Term;
@@ -47,7 +48,7 @@ import java.util.List;
 /**
  * 選択した日の科目を表示する画面
  */
-public class DayAttendanceActivity extends ActionBarActivity {
+public class DayAttendanceActivity extends ActionBarActivity implements ActionBar.TabListener {
     // TextView(なんのだろう？)
     MainTabPagerAdapter mainTabPagerAdapter;
 
@@ -63,12 +64,14 @@ public class DayAttendanceActivity extends ActionBarActivity {
     String date;
 
     SharedPreferences pref;
+    Term term;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day_attendance);
         pref = getSharedPreferences("TermSellect", MODE_PRIVATE);
+        term=Term.get(pref.getLong("TermId",1));
 
         /**
          * テスト
@@ -84,13 +87,11 @@ public class DayAttendanceActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         try {
-            getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        } catch (Exception e) {
-        }
+            getSupportActionBar().setNavigationMode(getSupportActionBar().NAVIGATION_MODE_TABS);
+        } catch (Exception e) { }
         getSupportActionBar().getTitle();
 
-        mainTabPagerAdapter = new MainTabPagerAdapter(
-                getSupportFragmentManager());
+        mainTabPagerAdapter = new MainTabPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mainTabPagerAdapter);
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -98,9 +99,7 @@ public class DayAttendanceActivity extends ActionBarActivity {
             public void onPageSelected(int position) {
                 try{
                     getSupportActionBar().setSelectedNavigationItem(position);
-                }catch (Exception e){
-
-                }
+                }catch (Exception e){ }
             }
         });
         // getCountでタブの数を指定。
@@ -144,6 +143,7 @@ public class DayAttendanceActivity extends ActionBarActivity {
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putLong("TermId", term.getId());
                 editor.apply();
+                Log.d("ターム選択",term.name);
             }
         });
         termListView.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -209,8 +209,8 @@ public class DayAttendanceActivity extends ActionBarActivity {
                 }
 
                 long termId = term.getId();
-
                 load(term);
+
                 Intent intent = new Intent(DayAttendanceActivity.this, EditActivity.class);
                 intent.putExtra("タームの生成", termId);
                 startActivityForResult(intent, 1);
@@ -225,23 +225,28 @@ public class DayAttendanceActivity extends ActionBarActivity {
                 long month1 = spinnerMonth1.getSelectedItemId() + 1;
                 long date1 = spinnerDate1.getSelectedItemId() + 1;
 
-
                 String year2 = editYear2.getText().toString();
                 long month2 = spinnerMonth2.getSelectedItemId() + 1;
                 long date2 = spinnerDate2.getSelectedItemId() + 1;
+
+
+                ProgressDialog asyncTaskDialog = new ProgressDialog(DayAttendanceActivity.this);
+                asyncTaskDialog.setTitle("時間割のよみこみをしています。");
+                asyncTaskDialog.setMessage("保存中…");
+                asyncTaskDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                //asyncTskDialog.setMax(100);
+                //asyncTskDialog.setProgress(0);
+                AttendanceAsyncTask asyncTask=new AttendanceAsyncTask(getApplicationContext(),term,asyncTaskDialog);
+                asyncTask.execute("");
                 dateStert = String.format("%1$s%2$02d%3$02d", year1, month1, date1);
                 dateEnd = String.format("%1$s%2$02d%3$02d", year2, month2, date2);
+
                 term.dateStert = dateStert;
                 term.dateEnd = dateEnd;
                 term.save();
-                ProgressDialog asyncTskDialog = new ProgressDialog(getApplicationContext());
-                asyncTskDialog.setTitle("時間割のよみこみをしています。");
-                asyncTskDialog.setMessage("保存中…");
-                asyncTskDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                //asyncTskDialog.setMax(100);
-                //asyncTskDialog.setProgress(0);
-                asyncTskDialog.show();
-                new AttendanceAsyncTask(getApplicationContext(), term).execute("");
+                dialog.dismiss();
+
+                asyncTaskDialog.show();
 
             }
         });
@@ -338,22 +343,19 @@ public class DayAttendanceActivity extends ActionBarActivity {
 
     }
 
+    @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        // ここで表示するフラグメントを決定する
-        // setCurrentItem で、下記の SectionPagerAdapter の getItem を呼び出し
         mViewPager.setCurrentItem(tab.getPosition());
     }
 
-    /**
-     * タブの選択が外れた場合の処理
-     */
+    @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        mViewPager.setCurrentItem(tab.getPosition());
+
     }
 
-    /**
-     * タブが2度目以降に選択された場合の処理
-     */
-
+    @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        mViewPager.setCurrentItem(tab.getPosition());
     }
 }

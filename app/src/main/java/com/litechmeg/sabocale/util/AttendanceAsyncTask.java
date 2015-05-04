@@ -22,7 +22,8 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, Long> implem
     Context context;
     Term term;
 
-    public AttendanceAsyncTask(Context context, Term term) {
+    public AttendanceAsyncTask(Context context, Term term,ProgressDialog dialog) {
+        this.dialog=dialog;
         this.context = context;
         this.term=term;
     }
@@ -43,10 +44,10 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, Long> implem
         String dateStart;
         String dateEnd = ""; // TODO
         dateStart = term.dateStert;
-        int firstDayOfWeek = Term.get(0).dayOfWeek;
-        // dateEnd = term.dateEnd;
-        System.out.println(dateStart);
-        System.out.println(dateEnd);
+        dateEnd=term.dateEnd;
+        int firstDayOfWeek = term.dayOfWeek;
+//        System.out.println(dateStart);
+//        System.out.println(dateEnd);
         int y = Integer.valueOf(dateStart) / 10000;
         int m = (Integer.valueOf(dateStart) % 10000) / 100;
         int d = Integer.valueOf(dateStart) % 100;
@@ -92,14 +93,15 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, Long> implem
 
 
             // その日の出席を全部取得して、あったら
-            if (Attendance.getAll(Integer.toString((y * 10000) + (m * 100) + (d))).size() != 0) {
+            if (Attendance.getAll(Integer.toString((y * 10000) + (m * 100) + (d)),term.getId()).size() != 0) {
                 // デバッグ出力
                 List<Attendance> attendances = Attendance.getAll(Integer.toString((y * 10000) + (m * 100)
-                        + (d)));
+                        + (d)),term.getId());
                 for (int i = 0; i < attendances.size(); i++) {
                     final Attendance attendance = Attendance.get(
                             (Integer.toString((y * 10000) + (m * 100) + (d))), i, 0);//後で変数に
-                    attendance.kamokuId = subjects.get(i).kamokuId;
+                    System.out.println("Attendance #" + i + ", Subject " + subjects.get(i).getName());
+                    attendance.kamokuId = subjects.get(i).kamokuId;//時間割subjectを変更した時の更新
                     attendance.save();
                     System.out.println("更新！" + attendance.kamokuId + "ターム" + term.name + " " + term.getId());
                 }

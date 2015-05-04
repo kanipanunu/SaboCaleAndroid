@@ -22,6 +22,12 @@ public class Attendance extends Model {
     @Column(name = "term")
     public long termId;
 
+    public static final int
+            STATUS_ATTENDANCE = 0,
+            STATUS_ABSENT = 1,
+            STATUS_LATE = 2,
+            STATUS_MADA = 3,
+            STATUS_KYUKO = 4;
 
 
     public static Attendance get(String date, int period,long termId) {
@@ -30,10 +36,13 @@ public class Attendance extends Model {
 		return new Select().from(Attendance.class).where("date=? and period=? and term=?", date, period,termId).executeSingle();
 	}
 
-	public static List<Attendance> getAll(String date) {
+	public static List<Attendance> getAll(String date,long termId) {
 		// TODO 自動生成されたメソッド・スタブ
-		return new Select().from(Attendance.class).where("date=?", date).execute();
+		return new Select().from(Attendance.class).where("date=? and term=?", date,termId).execute();
 	}
+    public static List<Attendance> getAll(String date){
+        return  new Select().from(Attendance.class).where("date=?",date).execute();
+    }
 
 	public static List<Attendance> daleteAll() {
 		return new Delete().from(Attendance.class).execute();
@@ -52,5 +61,8 @@ public class Attendance extends Model {
 	}
     public static List<Attendance> getTerm(long Id) {
         return  new Select().from(Attendance.class).where("term=?", Id).execute();
+    }
+    public static List<Attendance> getAll() {
+        return new Select().from(Attendance.class).execute();
     }
 }

@@ -20,15 +20,28 @@ public class Kamoku extends Model {
     public int kyuko = 0;
     public int size = 0;
 
+    public Kamoku() {
+        super();
+    }
+
+    public Kamoku(String name) {
+        this.name = name;
+    }
+
+    public Kamoku(String name, long termId) {
+        this.name = name;
+        this.termId = termId;
+    }
+
     public static List<Kamoku> getAll() {
         List<Kamoku> kamokus = new Select().from(Kamoku.class).execute();
         return kamokus;
     }
+
     public static List<Kamoku> getAll(Long termId) {
         List<Kamoku> kamokus = new Select().from(Kamoku.class).where("termId=?,termId").execute();
         return kamokus;
     }
-
 
     public static Kamoku get(String name) {// 以下のnameは引数。
         // TODO 自動生成されたメソッド・スタブ

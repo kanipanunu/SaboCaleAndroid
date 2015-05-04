@@ -4,9 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.view.fragment.CalendarView;
-import com.litechmeg.sabocale.view.fragment.DayAttendanceView;
+import com.litechmeg.sabocale.view.fragment.DayAttendanceFragment;
 import com.litechmeg.sabocale.view.fragment.KamokuListView;
 import com.litechmeg.sabocale.view.fragment.SettingsView;
 
@@ -18,7 +17,7 @@ public class MainTabPagerAdapter extends FragmentPagerAdapter{
     public MainTabPagerAdapter(FragmentManager fm){
         super(fm);
     }
-    Fragment dayAttendance=new DayAttendanceView();
+    Fragment dayAttendance=new DayAttendanceFragment();
     Fragment calender=new CalendarView();
     Fragment kamokuList=new KamokuListView();
     Fragment settings=new SettingsView();
