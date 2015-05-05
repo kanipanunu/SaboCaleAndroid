@@ -27,7 +27,7 @@ import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Kamoku;
 import com.litechmeg.sabocale.model.Subject;
 import com.litechmeg.sabocale.model.Term;
-import com.litechmeg.sabocale.util.EditListArrayAdapter;
+import com.litechmeg.sabocale.view.adapter.EditListArrayAdapter;
 
 import java.util.List;
 

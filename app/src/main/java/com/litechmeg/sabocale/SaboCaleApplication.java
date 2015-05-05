@@ -1,4 +1,4 @@
-package com.litechmeg.sabocale.util;
+package com.litechmeg.sabocale;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.app.Application;

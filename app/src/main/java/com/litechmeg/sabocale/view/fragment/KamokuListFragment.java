@@ -16,15 +16,12 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.activeandroid.query.Select;
 import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Kamoku;
-import com.litechmeg.sabocale.model.Term;
-import com.litechmeg.sabocale.util.KamokuListArrayAdapter;
+import com.litechmeg.sabocale.view.adapter.KamokuListArrayAdapter;
 import com.litechmeg.sabocale.view.activity.AttendanceListActivity;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 

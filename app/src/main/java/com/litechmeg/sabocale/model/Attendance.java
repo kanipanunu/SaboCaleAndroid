@@ -43,6 +43,7 @@ public class Attendance extends Model {
         return new Select().from(Attendance.class).where("date=?", date).execute();
     }
 
+    // FIXME dalete -> delete (spell miss)
     public static List<Attendance> daleteAll() {
         return new Delete().from(Attendance.class).execute();
     }
@@ -51,6 +52,7 @@ public class Attendance extends Model {
         return new Select().from(Attendance.class).where("date>=? and date<=? and term=?", dateStart, dateEnd, termId).execute();
     }
 
+    // FIXME Id => kamokuId
     public static List<Attendance> get(long date, long Id, long termId) {
         return new Select().from(Attendance.class).where("date=? and kamokuId=? and term=?", date, Id, termId).execute();
     }
