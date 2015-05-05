@@ -40,6 +40,10 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, Long> implem
     @Override
     protected Long doInBackground(String... params) {
 
+
+
+
+
         // その科目の数を取ってくる
         String dateStart;
         String dateEnd = ""; // TODO
@@ -61,6 +65,13 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, Long> implem
 
             dialog.setProgress((y * 10000) + (m * 100) + (d) - Integer.valueOf(dateStart));
 
+            Calendar c = Calendar.getInstance();
+            c.set(y,m,d);
+            c.getMaximum(Calendar.MONTH);
+            c.getTimeInMillis();
+            dayMax= c.getMaximum(Calendar.MONTH);
+            //カレンダーを更新する
+
             switch (m) {// 曜日の最大値設定。
                 case 1:
                 case 3:
@@ -78,7 +89,7 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, Long> implem
                     dayMax = 30;
                     break;
                 case 2:
-                    if (y % 4 == 0) {
+                    if (y % 4 != 0) {
                         dayMax = 28;
                     } else {
                         dayMax = 29;
@@ -88,9 +99,7 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, Long> implem
                     break;
             }
 
-            List<Subject> subjects = Subject.getAll(firstDayOfWeek % 7);
-            //同じtermnameのものがあったら
-
+            List<Subject> subjects = Subject.getAll(firstDayOfWeek % 7, term.getId());
 
             // その日の出席を全部取得して、あったら
             if (Attendance.getAll(Integer.toString((y * 10000) + (m * 100) + (d)),term.getId()).size() != 0) {
@@ -108,13 +117,15 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, Long> implem
             } else {// 無かったらつくる。※Subject参照
                 for (int i = 0; i < subjects.size(); i++) {
                     Attendance attendance = new Attendance();
+
                     attendance.termId = term.getId();
                     attendance.date = Integer.toString((y * 10000) + (m * 100) + (d));
                     attendance.period = i;
                     attendance.kamokuId = subjects.get(i).kamokuId;
+
                     Calendar calendar = Calendar.getInstance();
-                    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                            calendar.get(Calendar.DATE));
+                    calendar.set(y, m, d);
+
                     int date = ((calendar.get(Calendar.YEAR) * 10000)
                             + ((calendar.get(Calendar.MONTH) + 1) * 100) + // 月
                             calendar.get(Calendar.DAY_OF_MONTH)); // 日
@@ -127,6 +138,8 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, Long> implem
                     System.out.println("作った！" + attendance.kamokuId + "ターム" + term.name + " " + term.getId());
                 }
             }
+
+            // FIXME Replace: calendar.add(Calendar.DATE, 1);
             d++;// 日付ふえるよ
             firstDayOfWeek++;
 
@@ -138,6 +151,7 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, Long> implem
                     m = 1;
                 }
             }
+
 
         }
         return null;
@@ -151,4 +165,8 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, Long> implem
 
         dialog.dismiss();
     }
+    public long calendarGetMills(Calendar calendar){
+
+    }
+
 }
