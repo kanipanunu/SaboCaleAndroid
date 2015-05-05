@@ -40,7 +40,7 @@ public class DayAttendanceFragment extends Fragment {
     ListView kamokuListView;
     KamokuListArrayAdapter adapter;
 
-    String date;
+    long date;
     Calendar calendar;
     Long termId;
 
@@ -51,6 +51,7 @@ public class DayAttendanceFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // 第３引数のbooleanは"container"にreturnするViewを追加するかどうか
         // trueにすると最終的なlayoutに再度、同じView groupが表示されてしまうのでfalseでOKらしい
+        getPreference();
 
         View v = inflater.inflate(R.layout.fragment_day_attendance, container, false);
 
@@ -63,12 +64,12 @@ public class DayAttendanceFragment extends Fragment {
 
         calendar = Calendar.getInstance();
         // 日付を文字に変換
-        date = calendarToDateFormat(calendar);
+        date = calendar.getTimeInMillis();
 
         setDateText(); // dateTextViewに文字をセット
 
         // ListView関連
-        adapter = new KamokuListArrayAdapter(getActivity(), R.layout.activity_kamoku_list, date, 0);
+        adapter = new KamokuListArrayAdapter(getActivity(), R.layout.activity_kamoku_list, date,termId, 0);
           /*
         * adapterにデータを入れる
         * */
@@ -78,7 +79,6 @@ public class DayAttendanceFragment extends Fragment {
         kamokuListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View parent, final int position, long arg3) {
-                // TODO 自動生成されたメソッド・スタブ
                 // dialog用のレイアウトを取得
                 inflater.inflate(R.layout.dialog_subject_edit, (ViewGroup) parent.findViewById(R.id.layout_Dialog_edit));
                 parent.setBackgroundColor(Color.rgb(0xff, 0xff, 0xff));
@@ -90,7 +90,6 @@ public class DayAttendanceFragment extends Fragment {
                 final Attendance attendance = Attendance.get(date, position, 0);//後で変数に
 
                 final EditText editKamokuName = (EditText) parent.findViewById(R.id.editText1);
-                final TextView absenceText = (TextView) parent.findViewById(R.id.absence);
                 final Button ariButton = (Button) parent.findViewById(R.id.arikoma);
                 final Button nashiButton = (Button) parent.findViewById(R.id.akikoma);
                 final Button saveButton = (Button) parent.findViewById(R.id.saveButton);
@@ -182,18 +181,22 @@ public class DayAttendanceFragment extends Fragment {
         return v;
     }
 
+
+
+
+
     public void setDataToAdapter() {
-        SharedPreferences pref = getActivity().getSharedPreferences("TermSellect", getActivity().MODE_PRIVATE);
-        termId=pref.getLong("TermId",0);
+
+        //しぇあぷりを取得する
+        getPreference();
         List<Attendance>attendances;
-            attendances = Attendance.getAll(date);
+            attendances = Attendance.getAll(date,termId);
             List<Kamoku> kamokus;
             kamokus = new ArrayList<Kamoku>();
             for (int i = 0; i < attendances.size(); i++) {
                 Kamoku kamoku;
                 kamoku = Kamoku.load(Kamoku.class, attendances.get(i).kamokuId);
                 kamokus.add(kamoku);
-                Log.d("name", kamoku.name);
             }
             adapter.addAll(kamokus);
 
@@ -215,6 +218,10 @@ public class DayAttendanceFragment extends Fragment {
                 + calendar.get(Calendar.DAY_OF_MONTH) + "日");
         // 曜日を表示
         dayOfWeekTextView.setText(new SimpleDateFormat("E", Locale.JAPAN).format(calendar.getTime()));
+    }
+    public  void getPreference(){
+        SharedPreferences pref = getActivity().getSharedPreferences("TermSellect", getActivity().MODE_PRIVATE);
+        termId=pref.getLong("TermId",0);
     }
 
 }

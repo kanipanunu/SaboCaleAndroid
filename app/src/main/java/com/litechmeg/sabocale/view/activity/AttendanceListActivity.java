@@ -8,6 +8,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,9 +26,12 @@ public class AttendanceListActivity extends Activity {//
     long kamokuid;
 	Calendar calendar;
 	TextView kamokuName;
-
+    SharedPreferences pref;
+    long termId;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+        pref=getSharedPreferences("TermSellect", MODE_PRIVATE);
+        termId=pref.getLong("TermId",0);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_attendance_list);
 
@@ -42,27 +46,24 @@ public class AttendanceListActivity extends Activity {//
 		Kamoku kamoku = Kamoku.load(Kamoku.class, kamokuid);
 		kamokuName.setText(kamoku.name + "のヒストリー");
 		if (Kamoku.getAll().size() != 0) {
-			StartActivity.reload();
+			StartActivity.reload(this,termId);
 			// addapterの設定。
-			List<Attendance> getList = Attendance.get(kamoku.getId(),1);//後で変数に修正
+			List<Attendance> getList = Attendance.getList(kamoku.getId(), termId); // TODO 後で変数に修正
 			List<Attendance> putlist = new ArrayList<Attendance>();
 			Calendar calendar = Calendar.getInstance();
-			String thisdate = String.format("%04d%02d%02d", // yyyyMMdd形式に表示
-					calendar.get(Calendar.YEAR), // 年
-					calendar.get(Calendar.MONTH) + 1, // 月
-					calendar.get(Calendar.DAY_OF_MONTH)); // 日
+			calendar.getTimeInMillis();
 
 			Collections.sort(getList, new Comparator<Attendance>() {
 
 				@Override
 				public int compare(Attendance lhs, Attendance rhs) {
 					// TODO 自動生成されたメソッド・スタブ
-					return rhs.date.compareTo(lhs.date);
+					return Long.valueOf(rhs.date).compareTo(lhs.date);
 				}
 			});
 
 			for (int l = 0; l < getList.size(); l++) {
-				if (Integer.valueOf(getList.get(l).date) < Integer.valueOf(thisdate)) {
+				if (getList.get(l).date < calendar.getTimeInMillis()) {
 					putlist.add(getList.get(l));
 				}
 			}

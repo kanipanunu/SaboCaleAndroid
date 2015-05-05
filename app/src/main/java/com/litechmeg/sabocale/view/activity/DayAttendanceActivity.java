@@ -77,7 +77,6 @@ public class DayAttendanceActivity extends ActionBarActivity implements ActionBa
          * テスト
          */
 
-
         // Viewを関連付け
         DrawerLayout layout = (DrawerLayout) findViewById(R.id.drawerLayout);
         toggle = new ActionBarDrawerToggle(this, layout, R.string.terms, R.string.terms);
@@ -165,8 +164,11 @@ public class DayAttendanceActivity extends ActionBarActivity implements ActionBa
         parent.setBackgroundColor(Color.rgb(0xff, 0xff, 0xff));
 
         final EditText editTerm = (EditText) parent.findViewById(R.id.editTermName);
+        editTerm.setText("めぐこ");
         final EditText editYear1 = (EditText) parent.findViewById(R.id.year1);
+        editYear1.setText("2015");
         final EditText editYear2 = (EditText) parent.findViewById(R.id.year2);
+        editYear2.setText("2016");
         Button saveTerm = (Button) parent.findViewById(R.id.saveButton);
         Button editSubject = (Button) parent.findViewById(R.id.editButton);
 
@@ -221,32 +223,38 @@ public class DayAttendanceActivity extends ActionBarActivity implements ActionBa
             public void onClick(View v) {
                 String dateStert, dateEnd;
                 Term term = Term.get(editTerm.getText().toString());
-                String year1 = editYear1.getText().toString();
-                long month1 = spinnerMonth1.getSelectedItemId() + 1;
-                long date1 = spinnerDate1.getSelectedItemId() + 1;
+                if(term!=null) {
+                    int year1 = Integer.valueOf(editYear1.getText().toString());
+                    int month1 = (int)spinnerMonth1.getSelectedItemId() + 1;
+                    int date1 = (int)spinnerDate1.getSelectedItemId() + 1;
 
-                String year2 = editYear2.getText().toString();
-                long month2 = spinnerMonth2.getSelectedItemId() + 1;
-                long date2 = spinnerDate2.getSelectedItemId() + 1;
+                    int year2 = Integer.valueOf(editYear1.getText().toString());
+                    int month2 = (int)spinnerMonth2.getSelectedItemId() + 1;
+                    int date2 = (int)spinnerDate2.getSelectedItemId() + 1;
 
 
-                ProgressDialog asyncTaskDialog = new ProgressDialog(DayAttendanceActivity.this);
-                asyncTaskDialog.setTitle("時間割のよみこみをしています。");
-                asyncTaskDialog.setMessage("保存中…");
-                asyncTaskDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                //asyncTskDialog.setMax(100);
-                //asyncTskDialog.setProgress(0);
-                AttendanceAsyncTask asyncTask=new AttendanceAsyncTask(getApplicationContext(),term,asyncTaskDialog);
-                asyncTask.execute("");
-                dateStert = String.format("%1$s%2$02d%3$02d", year1, month1, date1);
-                dateEnd = String.format("%1$s%2$02d%3$02d", year2, month2, date2);
+                    ProgressDialog asyncTaskDialog = new ProgressDialog(DayAttendanceActivity.this);
+                    asyncTaskDialog.setTitle("時間割のよみこみをしています。");
+                    asyncTaskDialog.setMessage("保存中…");
+                    asyncTaskDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    //asyncTskDialog.setMax(100);
+                    //asyncTskDialog.setProgress(0);
+                    AttendanceAsyncTask asyncTask = new AttendanceAsyncTask(getApplicationContext(), term, asyncTaskDialog);
+                    asyncTask.execute("");
 
-                term.dateStert = dateStert;
-                term.dateEnd = dateEnd;
-                term.save();
-                dialog.dismiss();
+                    Calendar c = Calendar.getInstance();
 
-                asyncTaskDialog.show();
+                    c.set(year1, month1, date1);
+                    term.dateStert = c.getTimeInMillis();
+
+                    c.set(year2, month2, date2);
+                    term.dateEnd =  c.getTimeInMillis();
+
+                    term.save();
+                    dialog.dismiss();
+
+                    asyncTaskDialog.show();
+                }
 
             }
         });

@@ -18,35 +18,44 @@ import android.widget.TextView;
 import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Kamoku;
+import com.litechmeg.sabocale.model.Term;
 
 public class KamokuListArrayAdapter extends ArrayAdapter<Kamoku> {
 	// activityモード
 	// 0 = DayAttendanceCalender
 	// 1 = KamokuListActivity
 	// 2 = SettingActivity
-	int mMode = 0;
+    public static final int
+            MODE_DAY_ATTENDANCE_CALENDAR = 0,
+            MODE_KAMOKU_LIST=1,
+            MODE_SETTING=2;
 
-	LayoutInflater layoutInflater_;
+	int mMode = MODE_DAY_ATTENDANCE_CALENDAR;
+
+	LayoutInflater inflater;
 
 	// 表示したい日時情報
-	String date;
+	long date;
 
-	public KamokuListArrayAdapter(Context context, int resource, String date, int mode) {
+    long termId;
+
+	public KamokuListArrayAdapter(Context context, int resource, long date, long termId,int mode) {
 		super(context, resource);
+        this.termId=termId;
 
 		mMode = mode;
-		if (mMode == 0) {
+		if (mMode == MODE_DAY_ATTENDANCE_CALENDAR) {
 			this.date = date;
 		}
 		// layoutInflaterを取得
-		layoutInflater_ = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		// layoutInflaterでリソースからViewを生成
 		if (null == convertView) {
-			convertView = layoutInflater_.inflate(R.layout.list_item_kamoku, null);
+			convertView = inflater.inflate(R.layout.list_item_kamoku, null);
 		}
 		convertView.setLayoutParams(new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT, 150));
 
@@ -86,7 +95,7 @@ public class KamokuListArrayAdapter extends ArrayAdapter<Kamoku> {
 		absenceTextView.setText(kamoku.absenceCount + kamoku.late / 3 + "");
 
 		// モードによって部品の表示を変える
-		if (mMode == 0) {
+		if (mMode == MODE_DAY_ATTENDANCE_CALENDAR) {
 			kamokuCountTextView.setVisibility(View.GONE);
 			absenceTextView.setVisibility(View.GONE);
 			mainasuTextView.setVisibility(View.GONE);
@@ -104,10 +113,10 @@ public class KamokuListArrayAdapter extends ArrayAdapter<Kamoku> {
 			kamokuNumTextView.setVisibility(View.GONE);
 		}
 
-		if (mMode == 0) {
-            // 現在位置の出席を取得(nullはあり得ない)
-            if (Attendance.get(date, position, 1) != null) {
-                final Attendance attendance = Attendance.get(date, position, 0);//後で変数に
+		if (mMode == MODE_DAY_ATTENDANCE_CALENDAR) {
+            // 現在位置の出席を取得
+            if (Attendance.get(date, position, termId) != null) {
+                final Attendance attendance = Attendance.get(date, position, termId);//後で変数に
 
                 // 出席
                 attendButton.setOnClickListener(new OnClickListener() {
@@ -141,18 +150,15 @@ public class KamokuListArrayAdapter extends ArrayAdapter<Kamoku> {
                     }
                 });
 
-                // seekbarに現在のステータスを設定
                 if (attendance.status == Attendance.STATUS_MADA) {
                     attendButton.setAlpha(1f);
                     absenceButton.setAlpha(0.3f);
                     lateButton.setAlpha(0.3f);
 
                     Calendar calendar = Calendar.getInstance();
-                    String thisdate = String.format("%04d%02d%02d", // yyyyMMdd形式に表示
-                            calendar.get(Calendar.YEAR), // 年
-                            calendar.get(Calendar.MONTH) + 1, // 月
-                            calendar.get(Calendar.DAY_OF_MONTH)); // 日
-                    if (thisdate.compareTo(attendance.date) >= 0) {
+
+
+                    if ( calendar.getTimeInMillis()>=attendance.date ) {
                         attendance.status = Attendance.STATUS_ATTENDANCE;// 今日よりも前で未選択のがあったら出席扱い。
                         attendance.save();
                     } else {
@@ -192,6 +198,8 @@ public class KamokuListArrayAdapter extends ArrayAdapter<Kamoku> {
                 }
 
             }
+
+
             if (kamoku.name.equals("free")) {
                 convertView.setVisibility(View.INVISIBLE);
             }

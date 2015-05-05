@@ -13,9 +13,9 @@ public class Term extends Model {
     public String name;
     @Column(name = "dateStart")
     // 0=start,1=end
-    public String dateStert;
+    public long dateStert;
     @Column(name = "dateEnd")
-    public String dateEnd;
+    public long dateEnd;
     @Column(name = "dayOfWeek")
     public int dayOfWeek;
 

@@ -67,13 +67,11 @@ public class AttendanceListArrayAdapter extends ArrayAdapter<Attendance> {
 		final LinearLayout linearLayout = (LinearLayout) convertView.findViewById(R.id.layoutkazu);
 
 		// 名前のセット
-		int y = Integer.valueOf(attendance.date) / 10000;
-		int m = (Integer.valueOf(attendance.date) % 10000) / 100;
-		int d = Integer.valueOf(attendance.date) % 100;
+
 		Calendar calendar = Calendar.getInstance();
-		calendar.set(y, m - 1, d);
+		calendar.setTimeInMillis(attendance.date);
 		String dayOfWeek_str = new SimpleDateFormat("E", Locale.JAPAN).format(calendar.getTime());
-		String date = m + "月" + d + "日" + "（" + dayOfWeek_str + "）";
+		String date = calendar.get(Calendar.MONTH) + "月" + calendar.get(Calendar.DATE) + "日" + "（" + dayOfWeek_str + "）";
 		nameTextView.setText(date);
 		nameTextView.setTextSize(150 / date.length());
 

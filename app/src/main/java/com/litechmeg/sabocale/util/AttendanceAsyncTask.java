@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Subject;
@@ -15,17 +16,17 @@ import java.util.List;
 /**
  * Created by megukanipan on 2015/03/31.
  */
-public class AttendanceAsyncTask extends AsyncTask<String, Integer, Long> implements SearchManager.OnCancelListener {
+public class AttendanceAsyncTask extends AsyncTask<String, Integer, List<Attendance>> implements SearchManager.OnCancelListener {
 
     final String TAG = "MyAsyncTask";
     ProgressDialog dialog;
     Context context;
     Term term;
 
-    public AttendanceAsyncTask(Context context, Term term,ProgressDialog dialog) {
-        this.dialog=dialog;
+    public AttendanceAsyncTask(Context context, Term term, ProgressDialog dialog) {
+        this.dialog = dialog;
         this.context = context;
-        this.term=term;
+        this.term = term;
     }
 
     @Override
@@ -38,135 +39,71 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, Long> implem
     }
 
     @Override
-    protected Long doInBackground(String... params) {
-
-
-
-
-
-        // その科目の数を取ってくる
-        String dateStart;
-        String dateEnd = ""; // TODO
-        dateStart = term.dateStert;
-        dateEnd=term.dateEnd;
+    protected List<Attendance> doInBackground(String... params) {
+        //関連づけ
+        long dateStart = term.dateStert;
+        long dateEnd = term.dateEnd;
         int firstDayOfWeek = term.dayOfWeek;
-//        System.out.println(dateStart);
-//        System.out.println(dateEnd);
-        int y = Integer.valueOf(dateStart) / 10000;
-        int m = (Integer.valueOf(dateStart) % 10000) / 100;
-        int d = Integer.valueOf(dateStart) % 100;
 
-        int dayMax = 30;
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTimeInMillis(dateStart);
 
-        dialog.setMax(Integer.valueOf(dateEnd) - Integer.valueOf(dateStart));
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTimeInMillis(dateEnd);
 
-        while ((y * 10000) + (m * 100) + (d) <= Integer.valueOf(dateEnd)) {
-            System.out.println(y + ":" + m + ":" + d);
+        dialog.setMax((int)(dateEnd - dateStart));
 
-            dialog.setProgress((y * 10000) + (m * 100) + (d) - Integer.valueOf(dateStart));
+        while (startCalendar.after(endCalendar)) {
+            // ダイアログを更新
+            dialog.setProgress((int)(startCalendar.getTimeInMillis() - dateStart));
 
-            Calendar c = Calendar.getInstance();
-            c.set(y,m,d);
-            c.getMaximum(Calendar.MONTH);
-            c.getTimeInMillis();
-            dayMax= c.getMaximum(Calendar.MONTH);
-            //カレンダーを更新する
-
-            switch (m) {// 曜日の最大値設定。
-                case 1:
-                case 3:
-                case 5:
-                case 7:
-                case 8:
-                case 10:
-                case 12:
-                    dayMax = 31;
-                    break;
-                case 4:
-                case 6:
-                case 9:
-                case 11:
-                    dayMax = 30;
-                    break;
-                case 2:
-                    if (y % 4 != 0) {
-                        dayMax = 28;
-                    } else {
-                        dayMax = 29;
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-            List<Subject> subjects = Subject.getAll(firstDayOfWeek % 7, term.getId());
+            long date = startCalendar.getTimeInMillis();
+            List<Subject> subjects = Subject.getAll(startCalendar.get(Calendar.DAY_OF_WEEK), term.getId());
 
             // その日の出席を全部取得して、あったら
-            if (Attendance.getAll(Integer.toString((y * 10000) + (m * 100) + (d)),term.getId()).size() != 0) {
-                // デバッグ出力
-                List<Attendance> attendances = Attendance.getAll(Integer.toString((y * 10000) + (m * 100)
-                        + (d)),term.getId());
-                for (int i = 0; i < attendances.size(); i++) {
-                    final Attendance attendance = Attendance.get(
-                            (Integer.toString((y * 10000) + (m * 100) + (d))), i, 0);//後で変数に
-                    System.out.println("Attendance #" + i + ", Subject " + subjects.get(i).getName());
-                    attendance.kamokuId = subjects.get(i).kamokuId;//時間割subjectを変更した時の更新
+            List<Attendance> attendances = Attendance.getAll(date, term.getId());
+            if (attendances != null && attendances.size() > 0) {
+                for (int period = 0, size = attendances.size(); period < size; period++) {
+                    final Attendance attendance = Attendance.get(date, period, term.getId());
+
+                    attendance.kamokuId = subjects.get(period).kamokuId;//時間割subjectを変更した時の更新
                     attendance.save();
-                    System.out.println("更新！" + attendance.kamokuId + "ターム" + term.name + " " + term.getId());
                 }
             } else {// 無かったらつくる。※Subject参照
-                for (int i = 0; i < subjects.size(); i++) {
+                for (int period = 0; period < subjects.size(); period++) {
                     Attendance attendance = new Attendance();
 
                     attendance.termId = term.getId();
-                    attendance.date = Integer.toString((y * 10000) + (m * 100) + (d));
-                    attendance.period = i;
-                    attendance.kamokuId = subjects.get(i).kamokuId;
+                    attendance.date = date;
+                    attendance.period = period;
+                    attendance.kamokuId = subjects.get(period).kamokuId;
 
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.set(y, m, d);
+                    Calendar now = Calendar.getInstance();
 
-                    int date = ((calendar.get(Calendar.YEAR) * 10000)
-                            + ((calendar.get(Calendar.MONTH) + 1) * 100) + // 月
-                            calendar.get(Calendar.DAY_OF_MONTH)); // 日
-                    if (((y * 10000) + (m * 100) + (d)) <= date) {
+                    if (now.after(startCalendar)) {
                         attendance.status = 0;
                     } else {
                         attendance.status = 3;
                     }
+
                     attendance.save();
-                    System.out.println("作った！" + attendance.kamokuId + "ターム" + term.name + " " + term.getId());
                 }
             }
 
-            // FIXME Replace: calendar.add(Calendar.DATE, 1);
-            d++;// 日付ふえるよ
-            firstDayOfWeek++;
-
-            if (d > dayMax) {// 月が変わるよ
-                m++;
-                d = 1;
-                if (m > 12) {// 年が変わるよ
-                    y++;
-                    m = 1;
-                }
-            }
-
-
+            startCalendar.add(Calendar.DATE, 1);
         }
-        return null;
-
+        return Attendance.getAll();
     }
 
     @Override
-    protected void onPostExecute(Long result) {
-        // TODO 処理が終了したらすること
+    protected void onPostExecute(List<Attendance> result) {
         super.onPostExecute(result);
 
         dialog.dismiss();
-    }
-    public long calendarGetMills(Calendar calendar){
 
+        for(Attendance a: result){
+            System.out.println("a: " + a.toLog());
+        }
     }
 
 }

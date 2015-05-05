@@ -1,6 +1,7 @@
 package com.litechmeg.sabocale.view.activity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
@@ -40,21 +41,21 @@ public class KamokuListActivity extends Activity {
 	ListView listview;
 	KamokuListArrayAdapter adapter;
 
-    SharedPreferences pref = getSharedPreferences("TermSellect", this.MODE_PRIVATE);
-
+    SharedPreferences pref;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_kamoku_list);
-		editText = (EditText) findViewById(R.id.editText1);
-		editText.setVisibility(View.GONE);
+        pref = getSharedPreferences("TermSellect", this.MODE_PRIVATE);
+
+        long termId=pref.getLong("TermId",0);
 
 		// Adapterの設定
-		adapter = new KamokuListArrayAdapter(this, R.layout.activity_kamoku_list, null, 1);
+		adapter = new KamokuListArrayAdapter(this, R.layout.activity_kamoku_list,0,termId, 1);
 		List<Kamoku> kamokus = Kamoku.getAll();
 		for (int i = 0; i < kamokus.size(); i++) {
 			kamokus.get(i).calculate();
-            if (Attendance.get(kamokus.get(i).getId(),0).size() == 0) {//後で変数にする
+            if (Attendance.getList(kamokus.get(i).getId(), termId).size() == 0) {//後で変数にする
                 Kamoku.delete(Kamoku.class, kamokus.get(i).getId());//ここがうまく働いていないかも
                 System.out.println(kamokus.get(i).name);
                 if (!kamokus.get(i).name.equals("free")) {
@@ -173,13 +174,19 @@ public class KamokuListActivity extends Activity {
 
 	}
 
-	public static List<Attendance> dateLook(long x) {
-		List<Attendance> attendances = new ArrayList<Attendance>();
+	public List<Attendance> dateLook(long x) {
+        SharedPreferences pref;
+
+        pref = getSharedPreferences("TermSellect", this.MODE_PRIVATE);
+
+        long termId=pref.getLong("TermId",0);
+
+        List<Attendance> attendances = new ArrayList<Attendance>();
 		String dateStart;
 		String dateEnd;
-		dateStart = Term.get(0).dateStert;
-		int firstDayOfWeek = Term.get(0).dayOfWeek;
-		dateEnd = Term.get(1).dateStert;
+		dateStart = Long.toString(Term.get(termId).dateStert);
+		int firstDayOfWeek = Term.get(termId).dayOfWeek;
+		dateEnd = Long.toString(Term.get(termId).dateEnd);
 		System.out.println(dateStart);
 		System.out.println(dateEnd);
 		int y = Integer.valueOf(dateStart) / 10000;
@@ -214,7 +221,11 @@ public class KamokuListActivity extends Activity {
 			default:
 				break;
 			}
-			attendances.addAll(Attendance.get(Integer.toString((y * 10000) + (m * 100) + (d)), x,1));//後で変数に
+            Calendar calendar;
+            calendar = Calendar.getInstance();
+            calendar.set(y,m,d);
+            calendar.getTimeInMillis();
+			attendances.addAll(Attendance.get(calendar.getTimeInMillis(), x,1));//後で変数に
 			d++;// 日付ふえるよ
 			firstDayOfWeek++;
 

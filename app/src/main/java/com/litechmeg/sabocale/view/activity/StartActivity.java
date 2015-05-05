@@ -27,11 +27,14 @@ import com.litechmeg.sabocale.util.Twitter;
  * 起動画面
  */
 public class StartActivity extends ActionBarActivity {
+    SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+        pref=getSharedPreferences("TermSellect", this.MODE_PRIVATE);
+        long termId=pref.getLong("TermId",0);
         SharedPreferences preference = getSharedPreferences("しぇあぷり", MODE_PRIVATE);
         Editor firstBoot = preference.edit();
         /*
@@ -43,7 +46,7 @@ public class StartActivity extends ActionBarActivity {
         }
         */
         if (Kamoku.getAll().size() != 0) {
-            reload();
+            reload(this,termId);
         }
 
     }
@@ -116,14 +119,18 @@ public class StartActivity extends ActionBarActivity {
         Twitter.tweet(this, "めぐめぐ");
     }
 
-    public static void reload() {
+
+
+    public static void reload(Context context,long termId) {
         class MyAsyncTask extends AsyncTask<String, Integer, Long> implements OnCancelListener {
 
             final String TAG = "MyAsyncTask";
             Context context;
+            long termId;
 
-            public MyAsyncTask(Context context) {
+            public MyAsyncTask(Context context,long termId) {
                 this.context = context;
+                this.termId=termId;
             }
 
             @Override
@@ -140,7 +147,7 @@ public class StartActivity extends ActionBarActivity {
                 List<Kamoku> kamokus = Kamoku.getAll();
                 for (int i = 0; i < kamokus.size(); i++) {
                     Kamoku kamoku = kamokus.get(i);
-                    List<Attendance> getList = Attendance.get(kamoku.getId(),0);//後で変数に
+                    List<Attendance> getList = Attendance.getList(kamoku.getId(),termId);//後で変数に
                     List<Attendance> putlist = new ArrayList<Attendance>();
                     Calendar calendar = Calendar.getInstance();
                     String thisdate = String.format("%04d%02d%02d", // yyyyMMdd形式に表示
@@ -153,12 +160,12 @@ public class StartActivity extends ActionBarActivity {
                         @Override
                         public int compare(Attendance lhs, Attendance rhs) {
                             // TODO 自動生成されたメソッド・スタブ
-                            return rhs.date.compareTo(lhs.date);
+                            return Long.valueOf(rhs.date).compareTo(lhs.date);
                         }
                     });
 
                     for (int l = 0; l < getList.size(); l++) {
-                        if (Integer.valueOf(getList.get(l).date) < Integer.valueOf(thisdate)) {
+                        if (getList.get(l).date <calendar.getTimeInMillis()) {
                             putlist.add(getList.get(l));
                         }
                     }
@@ -168,13 +175,14 @@ public class StartActivity extends ActionBarActivity {
                             putlist.get(l).save();
                         }
                     }
-
                 }
 
                 return null;
             }
         }
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

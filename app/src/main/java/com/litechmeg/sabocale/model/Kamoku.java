@@ -39,7 +39,7 @@ public class Kamoku extends Model {
     }
 
     public static List<Kamoku> getAll(Long termId) {
-        List<Kamoku> kamokus = new Select().from(Kamoku.class).where("termId=?,termId").execute();
+        List<Kamoku> kamokus = new Select().from(Kamoku.class).where("termId=?",termId).execute();
         return kamokus;
     }
 
@@ -49,7 +49,7 @@ public class Kamoku extends Model {
     }
 
     public void calculate() {
-        List<Attendance> attendances = Attendance.get(getId(), 0);//後で変数にする。
+        List<Attendance> attendances = Attendance.getList(getId(), 0);//後で変数にする。
 
         absenceCount = 0;
         attend = 0;
