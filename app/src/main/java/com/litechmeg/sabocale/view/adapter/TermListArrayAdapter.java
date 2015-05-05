@@ -1,4 +1,4 @@
-package com.litechmeg.sabocale.util;
+package com.litechmeg.sabocale.view.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

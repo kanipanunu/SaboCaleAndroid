@@ -28,7 +28,7 @@ import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Kamoku;
 import com.litechmeg.sabocale.model.Term;
-import com.litechmeg.sabocale.util.KamokuListArrayAdapter;
+import com.litechmeg.sabocale.view.adapter.KamokuListArrayAdapter;
 
 /**
  * 科目のリストを表示する画面
@@ -54,7 +54,7 @@ public class KamokuListActivity extends Activity {
 		adapter = new KamokuListArrayAdapter(this, R.layout.activity_kamoku_list,0,termId, 1);
 		List<Kamoku> kamokus = Kamoku.getAll();
 		for (int i = 0; i < kamokus.size(); i++) {
-			kamokus.get(i).calculate();
+			kamokus.get(i).calculate(termId);
             if (Attendance.getList(kamokus.get(i).getId(), termId).size() == 0) {//後で変数にする
                 Kamoku.delete(Kamoku.class, kamokus.get(i).getId());//ここがうまく働いていないかも
                 System.out.println(kamokus.get(i).name);
@@ -68,7 +68,6 @@ public class KamokuListActivity extends Activity {
 
 			@Override
 			public int compare(Kamoku lhs, Kamoku rhs) {
-				// TODO 自動生成されたメソッド・スタブ
 				float l = ((float) lhs.absenceCount / (float) lhs.size);
 				float r = ((float) rhs.absenceCount / (float) rhs.size);
 
@@ -160,7 +159,6 @@ public class KamokuListActivity extends Activity {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View parent, int position, long arg3) {
-				// TODO 自動生成されたメソッド・スタブ
 				final Kamoku kamoku = adapter.getItem(position);
 
 				Intent intent = new Intent(KamokuListActivity.this, AttendanceListActivity.class);
@@ -176,19 +174,20 @@ public class KamokuListActivity extends Activity {
 
 	public List<Attendance> dateLook(long x) {
         SharedPreferences pref;
-
+        // FIXME SPConfig内の変数に置き換える
         pref = getSharedPreferences("TermSellect", this.MODE_PRIVATE);
 
         long termId=pref.getLong("TermId",0);
 
         List<Attendance> attendances = new ArrayList<Attendance>();
-		String dateStart;
-		String dateEnd;
-		dateStart = Long.toString(Term.get(termId).dateStert);
-		int firstDayOfWeek = Term.get(termId).dayOfWeek;
-		dateEnd = Long.toString(Term.get(termId).dateEnd);
+		String dateStart = Long.toString(Term.get(termId).dateStert);
+		String dateEnd = Long.toString(Term.get(termId).dateEnd);
+        int firstDayOfWeek = Term.get(termId).dayOfWeek;
+
 		System.out.println(dateStart);
 		System.out.println(dateEnd);
+
+        // TODO Calendarに置き換える
 		int y = Integer.valueOf(dateStart) / 10000;
 		int m = (Integer.valueOf(dateStart) % 10000) / 100;
 		int d = Integer.valueOf(dateStart) % 100;

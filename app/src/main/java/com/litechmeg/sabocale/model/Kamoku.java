@@ -34,22 +34,19 @@ public class Kamoku extends Model {
     }
 
     public static List<Kamoku> getAll() {
-        List<Kamoku> kamokus = new Select().from(Kamoku.class).execute();
-        return kamokus;
+        return new Select().from(Kamoku.class).execute();
     }
 
     public static List<Kamoku> getAll(Long termId) {
-        List<Kamoku> kamokus = new Select().from(Kamoku.class).where("termId=?",termId).execute();
-        return kamokus;
+        return new Select().from(Kamoku.class).where("termId=?", termId).execute();
     }
 
-    public static Kamoku get(String name) {// 以下のnameは引数。
-        // TODO 自動生成されたメソッド・スタブ
-        return (Kamoku) new Select().from(Kamoku.class).where("name=?", name).executeSingle();
+    public static Kamoku get(String name) {
+        return new Select().from(Kamoku.class).where("name=?", name).executeSingle();
     }
 
-    public void calculate() {
-        List<Attendance> attendances = Attendance.getList(getId(), 0);//後で変数にする。
+    public void calculate(long termId) {
+        List<Attendance> attendances = Attendance.getList(getId(), termId);
 
         absenceCount = 0;
         attend = 0;
@@ -57,6 +54,7 @@ public class Kamoku extends Model {
         kyuko = 0;
 
         for (int i = 0; i < size; i++) {
+            // FIXME status 0, 1, 2, 4 => Attendance.STATUS_~~
             if (attendances.get(i).status == 0) {
                 attend++;
             } else if (attendances.get(i).status == 1) {

@@ -29,12 +29,11 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.litechmeg.sabocale.R;
-import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Kamoku;
 import com.litechmeg.sabocale.model.Subject;
 import com.litechmeg.sabocale.model.Term;
 import com.litechmeg.sabocale.util.AttendanceAsyncTask;
-import com.litechmeg.sabocale.util.TermListArrayAdapter;
+import com.litechmeg.sabocale.view.adapter.TermListArrayAdapter;
 import com.litechmeg.sabocale.view.adapter.MainTabPagerAdapter;
 
 import java.io.BufferedReader;
@@ -70,6 +69,9 @@ public class DayAttendanceActivity extends ActionBarActivity implements ActionBa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day_attendance);
+
+        // FIXME spell miss
+        // FIXME SPConfig内の変数に置き換える
         pref = getSharedPreferences("TermSellect", MODE_PRIVATE);
         term=Term.get(pref.getLong("TermId",1));
 
@@ -140,6 +142,7 @@ public class DayAttendanceActivity extends ActionBarActivity implements ActionBa
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Term term = termAdapter.getItem(position);
                 SharedPreferences.Editor editor = pref.edit();
+                // FIXME SPConfig内の変数に置き換える
                 editor.putLong("TermId", term.getId());
                 editor.apply();
                 Log.d("ターム選択",term.name);
@@ -205,6 +208,7 @@ public class DayAttendanceActivity extends ActionBarActivity implements ActionBa
 
                 Term term = Term.get(termName);
                 if (term == null) {
+                    // FIXME コンストラクタ使う
                     term = new Term();
                     term.name = termName;
                     term.save();

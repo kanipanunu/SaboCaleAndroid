@@ -12,7 +12,6 @@ public class Term extends Model {
     @Column(name = "name")
     public String name;
     @Column(name = "dateStart")
-    // 0=start,1=end
     public long dateStert;
     @Column(name = "dateEnd")
     public long dateEnd;

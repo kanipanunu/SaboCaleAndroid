@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Term;
-import com.litechmeg.sabocale.util.KamokuListArrayAdapter;
+import com.litechmeg.sabocale.view.adapter.KamokuListArrayAdapter;
 
 /**
  * 時間割を読み込む画面
