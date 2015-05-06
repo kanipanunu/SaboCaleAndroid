@@ -79,19 +79,19 @@ public class DayAttendanceFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> arg0, View parent, final int position, long arg3) {
                 // dialog用のレイアウトを取得
-                inflater.inflate(R.layout.dialog_subject_edit, (ViewGroup) parent.findViewById(R.id.layout_Dialog_edit));
-                parent.setBackgroundColor(Color.rgb(0xff, 0xff, 0xff));
+                View dialogView = inflater.inflate(R.layout.dialog_subject_edit, null);
+                dialogView.setBackgroundColor(Color.rgb(0xff, 0xff, 0xff));
 
                 // Viewの関連付け
 
                 // 現在位置のKamokuを取得して名前を表示
                 final Kamoku kamoku = adapter.getItem(position);
-                final Attendance attendance = Attendance.get(date, position, 0);//後で変数に
+                final Attendance attendance = Attendance.get(date, position, termId);
 
-                final EditText editKamokuName = (EditText) parent.findViewById(R.id.editText1);
-                final Button ariButton = (Button) parent.findViewById(R.id.arikoma);
-                final Button nashiButton = (Button) parent.findViewById(R.id.akikoma);
-                final Button saveButton = (Button) parent.findViewById(R.id.saveButton);
+                final EditText editKamokuName = (EditText) dialogView.findViewById(R.id.editText1);
+                final Button ariButton = (Button) dialogView.findViewById(R.id.arikoma);
+                final Button nashiButton = (Button) dialogView.findViewById(R.id.akikoma);
+                final Button saveButton = (Button) dialogView.findViewById(R.id.saveButton);
 
                 editKamokuName.setText(kamoku.name + "");
 
@@ -107,7 +107,7 @@ public class DayAttendanceFragment extends Fragment {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
                         .setTitle("変更") // タイトルをセット
                         .setMessage(kamoku.name)// メッセージをセット
-                        .setView(parent); // Viewをセット
+                        .setView(dialogView); // Viewをセット
 
                 final AlertDialog dialog = alertDialogBuilder.show(); // アラートダイアログの表示
                 saveButton.setOnClickListener(new View.OnClickListener() {
@@ -207,7 +207,7 @@ public class DayAttendanceFragment extends Fragment {
     public String calendarToDateFormat(Calendar calendar) {
         return String.format("%04d%02d%02d", // yyyyMMdd形式に表示
                 calendar.get(Calendar.YEAR), // 年
-                calendar.get(Calendar.MONTH) + 1, // 月
+                calendar.get(Calendar.MONTH), // 月
                 calendar.get(Calendar.DAY_OF_MONTH)); // 日
     }
 

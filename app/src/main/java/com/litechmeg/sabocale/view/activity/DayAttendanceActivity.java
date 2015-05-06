@@ -226,12 +226,12 @@ public class DayAttendanceActivity extends ActionBarActivity implements ActionBa
                 Term term = Term.get(editTerm.getText().toString());
                 if(term!=null) {
                     int year1 = Integer.valueOf(editYear1.getText().toString());
-                    int month1 = (int)spinnerMonth1.getSelectedItemId() + 1;
-                    int date1 = (int)spinnerDate1.getSelectedItemId() + 1;
+                    int month1 = (int)spinnerMonth1.getSelectedItemId() ;
+                    int date1 = (int)spinnerDate1.getSelectedItemId() +1;
 
                     int year2 = Integer.valueOf(editYear1.getText().toString());
-                    int month2 = (int)spinnerMonth2.getSelectedItemId() + 1;
-                    int date2 = (int)spinnerDate2.getSelectedItemId() + 1;
+                    int month2 = (int)spinnerMonth2.getSelectedItemId() ;
+                    int date2 = (int)spinnerDate2.getSelectedItemId() +1;
 
 
                     ProgressDialog asyncTaskDialog = new ProgressDialog(DayAttendanceActivity.this);

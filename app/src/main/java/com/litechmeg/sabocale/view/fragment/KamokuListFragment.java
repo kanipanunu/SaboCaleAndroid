@@ -42,7 +42,7 @@ public class KamokuListFragment extends Fragment{
         //trueにすると最終的なlayoutに再度、同じView groupが表示されてしまうのでfalseでOKらしい
         View v=inflater.inflate(R.layout.activity_kamoku_list, null, false);
 
-        SharedPreferences pref = getActivity().getSharedPreferences("TermSellect", getActivity().MODE_PRIVATE);
+        SharedPreferences pref = getActivity().getSharedPreferences("TermSelect", getActivity().MODE_PRIVATE);
 
         listview = (ListView) v.findViewById(R.id.listView1);
 
@@ -53,7 +53,7 @@ public class KamokuListFragment extends Fragment{
         List<Kamoku> kamokus = Kamoku.getAll(termId);//
         for (int i = 0; i < kamokus.size(); i++) {
             kamokus.get(i).calculate(termId);
-            if (Attendance.getList(kamokus.get(i).getId(), termId).size() == 0) {//後で変数にする
+            if (Attendance.getList(kamokus.get(i).getId(), termId).size() != 0) {
                 Kamoku.delete(Kamoku.class, kamokus.get(i).getId());//ここがうまく働いていないかも
                 System.out.println(kamokus.get(i).name);
                 if (!kamokus.get(i).name.equals("free")) {

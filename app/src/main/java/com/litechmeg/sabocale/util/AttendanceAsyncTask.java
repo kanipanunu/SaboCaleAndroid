@@ -65,7 +65,6 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, List<Attenda
             if (attendances != null && attendances.size() > 0) {
                 for (int period = 0, size = attendances.size(); period < size; period++) {
                     final Attendance attendance = Attendance.get(date, period, term.getId());
-
                     attendance.kamokuId = subjects.get(period).kamokuId;//時間割subjectを変更した時の更新
                     attendance.save();
                 }
