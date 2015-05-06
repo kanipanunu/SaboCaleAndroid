@@ -23,6 +23,11 @@ public class Term extends Model {
         super();
     }
 
+    public Term(String termName){
+        super();
+        name=termName;
+    }
+
     public static Term get(long id) {
         return new Select().from(Term.class).where("id=?", id).executeSingle();
     }

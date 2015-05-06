@@ -180,62 +180,32 @@ public class KamokuListActivity extends Activity {
         long termId=pref.getLong("TermId",0);
 
         List<Attendance> attendances = new ArrayList<Attendance>();
-		String dateStart = Long.toString(Term.get(termId).dateStert);
-		String dateEnd = Long.toString(Term.get(termId).dateEnd);
+		long dateStart =(Term.get(termId).dateStert);
+		long dateEnd =(Term.get(termId).dateEnd);
         int firstDayOfWeek = Term.get(termId).dayOfWeek;
+        Calendar calendarStart=Calendar.getInstance();
+        Calendar calendarEnd=Calendar.getInstance();
+
+        calendarStart.setTimeInMillis(dateStart);
+        calendarEnd.setTimeInMillis(dateEnd);
+
+
+
 
 		System.out.println(dateStart);
 		System.out.println(dateEnd);
 
-        // TODO Calendarに置き換える
-		int y = Integer.valueOf(dateStart) / 10000;
-		int m = (Integer.valueOf(dateStart) % 10000) / 100;
-		int d = Integer.valueOf(dateStart) % 100;
 
-		int dayMax = 30;
-		while ((y * 10000) + (m * 100) + (d) <= Integer.valueOf(dateEnd)) {
-			switch (m) {// 曜日の最大値設定。
-			case 1:
-			case 3:
-			case 5:
-			case 7:
-			case 8:
-			case 10:
-			case 12:
-				dayMax = 31;
-				break;
-			case 4:
-			case 6:
-			case 9:
-			case 11:
-				dayMax = 30;
-				break;
-			case 2:
-				if (y % 4 == 0) {
-					dayMax = 28;
-				} else {
-					dayMax = 29;
-				}
-				break;
-			default:
-				break;
-			}
-            Calendar calendar;
-            calendar = Calendar.getInstance();
-            calendar.set(y,m,d);
-            calendar.getTimeInMillis();
-			attendances.addAll(Attendance.get(calendar.getTimeInMillis(), x,1));//後で変数に
-			d++;// 日付ふえるよ
+		int y = calendarStart.get(calendarStart.YEAR);
+		int m =calendarStart.get(calendarStart.MONTH);
+		int d = calendarStart.get(calendarStart.DATE);
+
+		while (calendarStart.getTimeInMillis() <= dateEnd) {
+            calendarStart.getTimeInMillis();
+			attendances.addAll(Attendance.get(calendarStart.getTimeInMillis(), x,termId));
+            calendarStart.add(Calendar.DATE,1);
 			firstDayOfWeek++;
 
-			if (d > dayMax) {// 月が変わるよ
-				m++;
-				d = 1;
-				if (m > 12) {// 年が変わるよ
-					y++;
-					m = 1;
-				}
-			}
 		}
 		return attendances;
 

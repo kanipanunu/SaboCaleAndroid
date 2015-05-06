@@ -63,7 +63,7 @@ public class DayAttendanceFragment extends Fragment {
 
         calendar = Calendar.getInstance();
         // 日付を文字に変換
-        date = calendar.getTimeInMillis();
+        date = (calendar.getTimeInMillis())-(calendar.getTimeInMillis())%(3600000*24);
 
         setDateText(); // dateTextViewに文字をセット
 
@@ -113,7 +113,6 @@ public class DayAttendanceFragment extends Fragment {
                 saveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // TODO 自動生成されたメソッド・スタブ
                         String newName = editKamokuName.getText().toString();
                         Log.d("かもく", newName);
 
@@ -219,7 +218,7 @@ public class DayAttendanceFragment extends Fragment {
         dayOfWeekTextView.setText(new SimpleDateFormat("E", Locale.JAPAN).format(calendar.getTime()));
     }
     public  void getPreference(){
-        SharedPreferences pref = getActivity().getSharedPreferences("TermSellect", getActivity().MODE_PRIVATE);
+        SharedPreferences pref = getActivity().getSharedPreferences("TermSelect", getActivity().MODE_PRIVATE);
         termId=pref.getLong("TermId",0);
     }
 

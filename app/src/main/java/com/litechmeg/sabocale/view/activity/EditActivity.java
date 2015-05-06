@@ -204,7 +204,6 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
 					saveButton.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							// TODO 自動生成されたメソッド・スタブ
 							subject.name = EditKamokuName.getText().toString();
 							if (Kamoku.get(subject.name) != null) {
 							} else {

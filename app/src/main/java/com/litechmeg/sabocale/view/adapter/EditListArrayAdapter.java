@@ -19,7 +19,6 @@ public class EditListArrayAdapter extends ArrayAdapter<Subject> {
 
 	public EditListArrayAdapter(Context context, int resource) {
 		super(context, resource);
-		// TODO 自動生成されたコンストラクター・スタブ
 		layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 

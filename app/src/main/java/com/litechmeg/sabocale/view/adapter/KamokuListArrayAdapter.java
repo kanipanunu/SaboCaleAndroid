@@ -172,7 +172,6 @@ public class KamokuListArrayAdapter extends ArrayAdapter<Kamoku> {
                     absenceButton.setClickable(false);
                     attendButton.setClickable(false);
                     lateButton.setClickable(false);
-                    // TODO positionのListViewを取ってきてsetalphaして半透明に。
                     nameTextView.setText("休講（" + kamoku.name + "）");
                     String name = "休講（" + kamoku.name + "）";
                     if (name.length() >= 4) {
@@ -196,6 +195,8 @@ public class KamokuListArrayAdapter extends ArrayAdapter<Kamoku> {
                     absenceButton.setAlpha(0.3f);
                     lateButton.setAlpha(1f);
                 }
+
+            }else if (mMode==MODE_KAMOKU_LIST){
 
             }
 

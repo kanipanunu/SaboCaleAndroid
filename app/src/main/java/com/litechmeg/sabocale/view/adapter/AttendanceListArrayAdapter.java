@@ -36,7 +36,6 @@ public class AttendanceListArrayAdapter extends ArrayAdapter<Attendance> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		// TODO 自動生成されたメソッド・スタブ
 		// layoutInflaterでリソースからViewを生成
 		if (null == convertView) {
 			convertView = layoutInflater_.inflate(R.layout.list_item_kamoku, null);

@@ -54,7 +54,7 @@ public class AttendanceListActivity extends Activity {//
         if (Kamoku.getAll().size() > 0) {
             StartActivity.reload(this, termId);
             // addapterの設定。
-            List<Attendance> getList = Attendance.getList(kamoku.getId(), termId); // TODO 後で変数に修正
+            List<Attendance> getList = Attendance.getList(kamoku.getId(), termId);
             List<Attendance> putlist = new ArrayList<Attendance>();
 
             Calendar calendar = Calendar.getInstance();

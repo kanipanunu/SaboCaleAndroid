@@ -54,14 +54,14 @@ public class Kamoku extends Model {
         kyuko = 0;
 
         for (int i = 0; i < size; i++) {
-            // FIXME status 0, 1, 2, 4 => Attendance.STATUS_~~
-            if (attendances.get(i).status == 0) {
+
+            if (attendances.get(i).status == Attendance.STATUS_ATTENDANCE) {
                 attend++;
-            } else if (attendances.get(i).status == 1) {
+            } else if (attendances.get(i).status == Attendance.STATUS_ABSENT) {
                 absenceCount++;
-            } else if (attendances.get(i).status == 2) {
+            } else if (attendances.get(i).status == Attendance.STATUS_LATE) {
                 late++;
-            } else if (attendances.get(i).status == 4) {
+            } else if (attendances.get(i).status == Attendance.STATUS_KYUKO) {
                 kyuko++;
             }
         }

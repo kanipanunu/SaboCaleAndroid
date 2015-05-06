@@ -52,7 +52,7 @@ public class KamokuListFragment extends Fragment{
         adapter = new KamokuListArrayAdapter(getActivity(), R.layout.activity_kamoku_list, 0,termId, 1);
         List<Kamoku> kamokus = Kamoku.getAll(termId);//
         for (int i = 0; i < kamokus.size(); i++) {
-            kamokus.get(i).calculate();
+            kamokus.get(i).calculate(termId);
             if (Attendance.getList(kamokus.get(i).getId(), termId).size() == 0) {//後で変数にする
                 Kamoku.delete(Kamoku.class, kamokus.get(i).getId());//ここがうまく働いていないかも
                 System.out.println(kamokus.get(i).name);
@@ -66,7 +66,6 @@ public class KamokuListFragment extends Fragment{
 
             @Override
             public int compare(Kamoku lhs, Kamoku rhs) {
-                // TODO 自動生成されたメソッド・スタブ
                 float l = ((float) lhs.absenceCount / (float) lhs.size);
                 float r = ((float) rhs.absenceCount / (float) rhs.size);
 
@@ -110,12 +109,11 @@ public class KamokuListFragment extends Fragment{
                 int attend = 0;
                 int late = 0;
                 for (int i = 0; i < attendances.size(); i++) {
-                    // TODO 定数に置き換える
-                    if (attendances.get(i).status == 0) {
+                    if (attendances.get(i).status == Attendance.STATUS_ATTENDANCE) {
                         attend++;
-                    } else if (attendances.get(i).status == 1) {
+                    } else if (attendances.get(i).status == Attendance.STATUS_ABSENT) {
                         absenceCount++;
-                    } else if (attendances.get(i).status == 2) {
+                    } else if (attendances.get(i).status == Attendance.STATUS_LATE) {
                         late++;
                     }
                 }
@@ -153,7 +151,6 @@ public class KamokuListFragment extends Fragment{
 
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View parent, int position, long arg3) {
-                // TODO 自動生成されたメソッド・スタブ
                 final Kamoku kamoku = adapter.getItem(position);
 
                 Intent intent = new Intent(getActivity(), AttendanceListActivity.class);

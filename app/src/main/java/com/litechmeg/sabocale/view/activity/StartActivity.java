@@ -33,7 +33,7 @@ public class StartActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        pref=getSharedPreferences("TermSellect", this.MODE_PRIVATE);
+        pref=getSharedPreferences("TermSelect", this.MODE_PRIVATE);
         long termId=pref.getLong("TermId",0);
         SharedPreferences preference = getSharedPreferences("しぇあぷり", MODE_PRIVATE);
         Editor firstBoot = preference.edit();
@@ -159,7 +159,6 @@ public class StartActivity extends ActionBarActivity {
 
                         @Override
                         public int compare(Attendance lhs, Attendance rhs) {
-                            // TODO 自動生成されたメソッド・スタブ
                             return Long.valueOf(rhs.date).compareTo(lhs.date);
                         }
                     });

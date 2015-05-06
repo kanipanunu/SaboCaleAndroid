@@ -70,9 +70,8 @@ public class DayAttendanceActivity extends ActionBarActivity implements ActionBa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day_attendance);
 
-        // FIXME spell miss
         // FIXME SPConfig内の変数に置き換える
-        pref = getSharedPreferences("TermSellect", MODE_PRIVATE);
+        pref = getSharedPreferences("TermSelect", MODE_PRIVATE);
         term=Term.get(pref.getLong("TermId",1));
 
         /**
@@ -208,9 +207,7 @@ public class DayAttendanceActivity extends ActionBarActivity implements ActionBa
 
                 Term term = Term.get(termName);
                 if (term == null) {
-                    // FIXME コンストラクタ使う
-                    term = new Term();
-                    term.name = termName;
+                    term = new Term(termName);
                     term.save();
                 }
 
@@ -249,10 +246,10 @@ public class DayAttendanceActivity extends ActionBarActivity implements ActionBa
                     Calendar c = Calendar.getInstance();
 
                     c.set(year1, month1, date1);
-                    term.dateStert = c.getTimeInMillis();
+                    term.dateStert = (c.getTimeInMillis())-c.getTimeInMillis()%(3600000*24);
 
                     c.set(year2, month2, date2);
-                    term.dateEnd =  c.getTimeInMillis();
+                    term.dateEnd =  (c.getTimeInMillis())-c.getTimeInMillis()%(3600000*24);
 
                     term.save();
                     dialog.dismiss();
