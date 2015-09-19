@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Kamoku;
@@ -133,16 +134,24 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         termListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Term term = termAdapter.getItem(position);
-                AlertDialog.Builder builder =new AlertDialog.Builder(getApplicationContext())
-                        .setTitle("")
-                        .setMessage("");
-                builder.show();
-                SharedPreferences.Editor editor = pref.edit();
-                // FIXME SPConfig内の変数に置き換える
-                editor.putLong("TermId", term.getId());
-                editor.apply();
-                Log.d("ターム選択", term.name);
+                final Term term = termAdapter.getItem(position);
+                AlertDialog.Builder builder =new AlertDialog.Builder(getApplicationContext());
+                View v = getLayoutInflater().inflate(R.layout.dialog_term_select, (ViewGroup)findViewById(R.id.layout_Dialog));
+                v.setBackgroundColor(Color.rgb(0xff, 0xff, 0xff));
+                TextView text=(TextView)v.findViewById(R.id.selectText);
+                text.setText("表示するタームを" + term.name + "にしますか？");
+               Button bt=(Button)v.findViewById(R.id.hai);
+                       bt.setOnClickListener(new OnClickListener() {
+                   @Override
+                   public void onClick(View v) {
+                       SharedPreferences.Editor editor = pref.edit();
+                       // FIXME SPConfig内の変数に置き換える
+                       editor.putLong("TermId", term.getId());
+                       editor.apply();
+                       Log.d("ターム選択", term.name);
+                   }
+               });
+            builder.show();
             }
         });
         termListView.setOnItemLongClickListener(new OnItemLongClickListener() {
