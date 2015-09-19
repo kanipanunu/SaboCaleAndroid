@@ -54,7 +54,7 @@ public class KamokuListFragment extends Fragment{
         for (int i = 0; i < kamokus.size(); i++) {
             kamokus.get(i).calculate(termId);
             if (Attendance.getList(kamokus.get(i).getId(), termId).size() != 0) {
-                Kamoku.delete(Kamoku.class, kamokus.get(i).getId());//ここがうまく働いていないかも
+                kamokus.get(i).delete();//ここがうまく働いていないかも
                 System.out.println(kamokus.get(i).name);
                 if (!kamokus.get(i).name.equals("free")) {
                     adapter.add(kamokus.get(i));

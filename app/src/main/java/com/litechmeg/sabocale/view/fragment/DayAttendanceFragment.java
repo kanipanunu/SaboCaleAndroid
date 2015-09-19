@@ -55,7 +55,6 @@ public class DayAttendanceFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_day_attendance, container, false);
 
 
-
         // Viewを関連付け
         dateTextView = (TextView) v.findViewById(R.id.date);
         dayOfWeekTextView = (TextView) v.findViewById(R.id.DayOfWeek);
@@ -63,15 +62,12 @@ public class DayAttendanceFragment extends Fragment {
 
         calendar = Calendar.getInstance();
         // 日付を文字に変換
-        date = (calendar.getTimeInMillis())-(calendar.getTimeInMillis())%(3600000*24);
-
+        date = (calendar.getTimeInMillis()) - (calendar.getTimeInMillis() % (1000 * 3600 * 24));
+        Log.d("今日", "" + date);
         setDateText(); // dateTextViewに文字をセット
 
         // ListView関連
-        adapter = new KamokuListArrayAdapter(getActivity(), R.layout.activity_kamoku_list, date,termId, 0);
-          /*
-        * adapterにデータを入れる
-        * */
+        adapter = new KamokuListArrayAdapter(getActivity(), R.layout.activity_kamoku_list, date, termId, 0);
         setDataToAdapter();
         kamokuListView.setAdapter(adapter);
 
@@ -172,32 +168,27 @@ public class DayAttendanceFragment extends Fragment {
 
             }
         });
-
-
-
-
         return v;
     }
-
-
-
 
 
     public void setDataToAdapter() {
 
         //しぇあぷりを取得する
         getPreference();
-        List<Attendance>attendances;
-            attendances = Attendance.getAll(date,termId);
-            List<Kamoku> kamokus;
-            kamokus = new ArrayList<Kamoku>();
-            for (int i = 0; i < attendances.size(); i++) {
-                Kamoku kamoku;
-                kamoku = Kamoku.load(Kamoku.class, attendances.get(i).kamokuId);
+
+        List<Attendance> attendances = Attendance.getAll(date, termId);
+
+        ArrayList<Kamoku> kamokus = new ArrayList<Kamoku>();
+
+        for (Attendance attendance : attendances) {
+            Kamoku kamoku = Kamoku.get(attendance.kamokuId);
+            if (kamoku != null) {
                 kamokus.add(kamoku);
             }
-            adapter.addAll(kamokus);
+        }
 
+        adapter.addAll(kamokus);
     }
 
     public interface OnPeriodClickListener {
@@ -217,9 +208,10 @@ public class DayAttendanceFragment extends Fragment {
         // 曜日を表示
         dayOfWeekTextView.setText(new SimpleDateFormat("E", Locale.JAPAN).format(calendar.getTime()));
     }
-    public  void getPreference(){
+
+    public void getPreference() {
         SharedPreferences pref = getActivity().getSharedPreferences("TermSelect", getActivity().MODE_PRIVATE);
-        termId=pref.getLong("TermId",0);
+        termId = pref.getLong("TermId", 0);
     }
 
 }

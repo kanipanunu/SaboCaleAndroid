@@ -55,7 +55,7 @@ public class CalendarActivity extends Activity {
 					calendar.set(dateInfo.getYear(), dateInfo.getMonth() - 1, dateInfo.getDay());
 
 					if (m == null) {
-						Intent intent = new Intent(CalendarActivity.this, DayAttendanceActivity.class);
+						Intent intent = new Intent(CalendarActivity.this, MainActivity.class);
 						intent.putExtra("selection", calendar);
 						startActivity(intent);
 					} else {

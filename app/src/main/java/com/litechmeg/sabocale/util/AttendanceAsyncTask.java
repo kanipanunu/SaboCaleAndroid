@@ -3,6 +3,7 @@ package com.litechmeg.sabocale.util;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -22,6 +23,8 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, List<Attenda
     ProgressDialog dialog;
     Context context;
     Term term;
+    SharedPreferences pref;
+
 
     public AttendanceAsyncTask(Context context, Term term, ProgressDialog dialog) {
         this.dialog = dialog;
@@ -43,6 +46,7 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, List<Attenda
         //関連づけ
         long dateStart = term.dateStert;
         long dateEnd = term.dateEnd;
+        Log.d("", "Start: "+dateStart+"\n"+"End: "+dateEnd) ;
         int firstDayOfWeek = term.dayOfWeek;
 
         Calendar startCalendar = Calendar.getInstance();
@@ -53,7 +57,7 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, List<Attenda
 
         dialog.setMax((int)(dateEnd - dateStart));
 
-        while (startCalendar.after(endCalendar)) {
+        while (startCalendar.before(endCalendar)) {
             // ダイアログを更新
             dialog.setProgress((int)(startCalendar.getTimeInMillis() - dateStart));
 
@@ -91,18 +95,19 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, List<Attenda
 
             startCalendar.add(Calendar.DATE, 1);
         }
+
+
+
         return Attendance.getAll();
     }
 
     @Override
     protected void onPostExecute(List<Attendance> result) {
         super.onPostExecute(result);
+        System.out.println("onPostExecute");
+
 
         dialog.dismiss();
-
-        for(Attendance a: result){
-            System.out.println("a: " + a.toLog());
-        }
     }
 
 }

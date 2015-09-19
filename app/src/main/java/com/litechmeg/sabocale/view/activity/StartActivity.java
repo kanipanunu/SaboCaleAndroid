@@ -33,10 +33,10 @@ public class StartActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        pref=getSharedPreferences("TermSelect", this.MODE_PRIVATE);
-        long termId=pref.getLong("TermId",0);
+
         SharedPreferences preference = getSharedPreferences("しぇあぷり", MODE_PRIVATE);
         Editor firstBoot = preference.edit();
+
         /*
         if (preference.getBoolean("あ", false) == false) {
             Intent intent = new Intent(StartActivity.this,
@@ -46,7 +46,7 @@ public class StartActivity extends ActionBarActivity {
         }
         */
         if (Kamoku.getAll().size() != 0) {
-            reload(this,termId);
+            // reload(this,termId);
         }
 
     }
@@ -95,8 +95,7 @@ public class StartActivity extends ActionBarActivity {
     }
 
     public void todayButton(View v) {
-        Intent intent = new Intent(StartActivity.this, DayAttendanceActivity.class);
-        intent.putExtra("selection", "a");
+        Intent intent = new Intent(StartActivity.this, MainActivity.class);
         startActivity(intent);
     }
 

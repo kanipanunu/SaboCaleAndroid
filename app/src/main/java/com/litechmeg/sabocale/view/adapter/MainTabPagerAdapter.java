@@ -12,30 +12,26 @@ import com.litechmeg.sabocale.view.fragment.SettingsView;
 /**
  * Created by megukanipan on 2015/04/18.
  */
-public class MainTabPagerAdapter extends FragmentPagerAdapter{
+public class MainTabPagerAdapter extends FragmentPagerAdapter {
 
-    public MainTabPagerAdapter(FragmentManager fm){
+    public MainTabPagerAdapter(FragmentManager fm) {
         super(fm);
     }
-    Fragment dayAttendance=new DayAttendanceFragment();
-    Fragment calender=new CalendarView();
-    Fragment kamokuList=new KamokuListFragment();
-    Fragment settings=new SettingsView();
 
     @Override
     public Fragment getItem(int i) {
-        switch (i){
+        switch (i) {
             case 0:
-                return dayAttendance;
+                return new DayAttendanceFragment();
 
             case 1:
-                return calender;
+                return new CalendarView();
 
             case 2:
-                return kamokuList;
+                return new KamokuListFragment();
 
             case 3:
-                return settings;
+                return new SettingsView();
 
         }
         return null;
@@ -52,7 +48,7 @@ public class MainTabPagerAdapter extends FragmentPagerAdapter{
             case 0:
                 return "今日の";
             case 1:
-                return"カレンダー";
+                return "カレンダー";
             case 2:
                 return "見る";
             case 3:

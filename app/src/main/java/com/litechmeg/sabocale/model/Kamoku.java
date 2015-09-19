@@ -38,13 +38,14 @@ public class Kamoku extends Model {
     }
 
     public static List<Kamoku> getAll(Long termId) {
-        return new Select().from(Kamoku.class).where("termId=?", termId).execute();
+        return new Select().from(Kamoku.class).where("TermId=?", termId).execute();
     }
-
     public static Kamoku get(String name) {
         return new Select().from(Kamoku.class).where("name=?", name).executeSingle();
     }
-
+    public static Kamoku get(long Id) {
+        return new Select().from(Kamoku.class).where("id=?", Id).executeSingle();
+    }
     public void calculate(long termId) {
         List<Attendance> attendances = Attendance.getList(getId(), termId);
 

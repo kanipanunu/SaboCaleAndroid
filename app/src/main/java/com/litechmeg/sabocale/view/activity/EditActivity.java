@@ -227,6 +227,7 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
 								kamoku.save();
 							}
 							subject.kamokuId = (long) Kamoku.get(subject.name).getId();
+                            subject.termId=(long)Kamoku.get(subject.name).termId;
 							subject.save();
 						}
 
@@ -241,7 +242,8 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
 							}
 							subject.kamokuId = Kamoku.get("free").getId();
 							subject.name = "free";
-							subject.save();
+                            subject.termId=(long)Kamoku.get(subject.name).termId;
+                            subject.save();
 						}
 					});
 				}

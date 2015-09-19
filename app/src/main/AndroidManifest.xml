@@ -26,7 +26,7 @@
             android:name=".view.activity.CalendarActivity"
             android:label="@string/title_activity_calendar"/>
         <activity
-            android:name=".view.activity.DayAttendanceActivity"
+            android:name=".view.activity.MainActivity"
             android:label="@string/title_activity_day_attendance"/>
         <activity
             android:name=".view.activity.KamokuListActivity"
@@ -34,15 +34,16 @@
         <activity
             android:name=".view.activity.SettingsActivity"
             android:label="@string/title_activity_day_settings"/>
-        <activity
-            android:name=".view.activity.TodoActivity"
-            android:label="@string/title_activity_todo"/>
+
         <activity
             android:name=".view.activity.EditActivity"
             android:label="@string/title_activity_edit"/>
         <activity
             android:name=".view.activity.AttendanceListActivity"
             android:label="@string/title_activity_attendance_list"/>
+        <activity
+            android:name=".view.activity.DayAttendanceActivity"
+            android:label="@string/title_activity_day_attendance"/>
     </application>
 
     <supports-screens
