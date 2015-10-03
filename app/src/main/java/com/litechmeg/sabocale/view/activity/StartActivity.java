@@ -1,54 +1,26 @@
 package com.litechmeg.sabocale.view.activity;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import android.app.SearchManager.OnCancelListener;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
 
 import com.activeandroid.query.Select;
 import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Attendance;
-import com.litechmeg.sabocale.model.Kamoku;
-import com.litechmeg.sabocale.util.Twitter;
+
+import java.util.List;
 
 /**
  * 起動画面
  */
-public class StartActivity extends ActionBarActivity {
-    SharedPreferences pref;
+public class StartActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-
-        SharedPreferences preference = getSharedPreferences("しぇあぷり", MODE_PRIVATE);
-        Editor firstBoot = preference.edit();
-
-        /*
-        if (preference.getBoolean("あ", false) == false) {
-            Intent intent = new Intent(StartActivity.this,
-                    SettingsActivity.class);
-            startActivity(intent);
-        } else {
-        }
-        */
-        if (Kamoku.getAll().size() != 0) {
-            // reload(this,termId);
-        }
-
     }
 
     /**
@@ -71,7 +43,6 @@ public class StartActivity extends ActionBarActivity {
         // TODO todoActivityに遷移(未完)
         // Intent intent = new Intent(StartActivity.this, TodoActivity.class);
         // startActivity(intent);
-
     }
 
     /**
@@ -108,79 +79,6 @@ public class StartActivity extends ActionBarActivity {
         Intent intent = new Intent(StartActivity.this, KamokuListActivity.class);
         startActivity(intent);
     }
-
-    /**
-     * Twitterに投稿する
-     *
-     * @param v
-     */
-    public void twittButton(View v) {
-        Twitter.tweet(this, "めぐめぐ");
-    }
-
-
-
-    public static void reload(Context context,long termId) {
-        class MyAsyncTask extends AsyncTask<String, Integer, Long> implements OnCancelListener {
-
-            final String TAG = "MyAsyncTask";
-            Context context;
-            long termId;
-
-            public MyAsyncTask(Context context,long termId) {
-                this.context = context;
-                this.termId=termId;
-            }
-
-            @Override
-            protected void onPreExecute() {
-            }
-
-            @Override
-            public void onCancel() {
-            }
-
-            @Override
-            protected Long doInBackground(String... params) {
-
-                List<Kamoku> kamokus = Kamoku.getAll();
-                for (int i = 0; i < kamokus.size(); i++) {
-                    Kamoku kamoku = kamokus.get(i);
-                    List<Attendance> getList = Attendance.getList(kamoku.getId(),termId);//後で変数に
-                    List<Attendance> putlist = new ArrayList<Attendance>();
-                    Calendar calendar = Calendar.getInstance();
-                    String thisdate = String.format("%04d%02d%02d", // yyyyMMdd形式に表示
-                            calendar.get(Calendar.YEAR), // 年
-                            calendar.get(Calendar.MONTH) + 1, // 月
-                            calendar.get(Calendar.DAY_OF_MONTH)); // 日
-
-                    Collections.sort(getList, new Comparator<Attendance>() {
-
-                        @Override
-                        public int compare(Attendance lhs, Attendance rhs) {
-                            return Long.valueOf(rhs.date).compareTo(lhs.date);
-                        }
-                    });
-
-                    for (int l = 0; l < getList.size(); l++) {
-                        if (getList.get(l).date <calendar.getTimeInMillis()) {
-                            putlist.add(getList.get(l));
-                        }
-                    }
-                    for (int l = 0; l < putlist.size(); l++) {
-                        if (putlist.get(l).status == 3) {
-                            putlist.get(l).status = 0;
-                            putlist.get(l).save();
-                        }
-                    }
-                }
-
-                return null;
-            }
-        }
-
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
