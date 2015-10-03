@@ -9,6 +9,9 @@ import com.activeandroid.query.Select;
 
 import java.util.List;
 
+/**
+ * 授業の出席を管理するためのモデル
+ */
 @Table(name = "Attendance")
 public class Attendance extends Model {
 

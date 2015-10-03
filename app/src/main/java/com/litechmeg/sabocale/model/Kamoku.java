@@ -8,6 +8,9 @@ import com.activeandroid.query.Select;
 
 import java.util.List;
 
+/**
+ * 授業科目を管理するためのモデル
+ */
 @Table(name = "Kamoku")
 public class Kamoku extends Model {
 

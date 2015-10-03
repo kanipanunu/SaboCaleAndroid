@@ -9,6 +9,9 @@ import com.activeandroid.annotation.Table;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 
+/**
+ * 曜日ごと、時限ごとの科目を管理するためのモデル
+ */
 @Table(name = "Subject")
 public class Subject extends Model {
 

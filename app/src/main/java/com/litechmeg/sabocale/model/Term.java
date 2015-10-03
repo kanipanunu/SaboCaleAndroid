@@ -8,6 +8,9 @@ import com.activeandroid.annotation.Table;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 
+/**
+ * 授業の期間を管理するためのモデル
+ */
 @Table(name = "Term")
 public class Term extends Model {
 
