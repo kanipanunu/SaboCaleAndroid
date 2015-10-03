@@ -5,16 +5,21 @@ import java.util.List;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 
 @Table(name = "Term")
 public class Term extends Model {
+
     @Column(name = "name")
     public String name;
+
     @Column(name = "dateStart")
     public long dateStert;
+
     @Column(name = "dateEnd")
     public long dateEnd;
+
     @Column(name = "dayOfWeek")
     public int dayOfWeek;
 
@@ -23,20 +28,24 @@ public class Term extends Model {
         super();
     }
 
-    public Term(String termName){
+    public Term(String termName) {
         super();
-        name=termName;
+        name = termName;
     }
 
     public static Term get(long id) {
-        return new Select().from(Term.class).where("id=?", id).executeSingle();
+        return Model.load(Term.class, id);
     }
 
     public static List<Term> getAll() {
-        return new Select().from(Term.class).execute();
+        return query().execute();
     }
 
     public static Term get(String name) {
-        return new Select().from(Term.class).where("name=?", name).executeSingle();
+        return query().where("name=?", name).executeSingle();
+    }
+
+    public static From query(){
+        return new Select().from(Term.class);
     }
 }

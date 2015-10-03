@@ -3,14 +3,17 @@ package com.litechmeg.sabocale.model;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 
 import java.util.List;
 
 @Table(name = "Kamoku")
 public class Kamoku extends Model {
+
     @Column(name = "name")
     public String name;
+
     @Column(name = "TermId")
     public long termId;
 
@@ -25,10 +28,14 @@ public class Kamoku extends Model {
     }
 
     public Kamoku(String name) {
+        super();
+
         this.name = name;
     }
 
     public Kamoku(String name, long termId) {
+        super();
+
         this.name = name;
         this.termId = termId;
     }
@@ -38,14 +45,21 @@ public class Kamoku extends Model {
     }
 
     public static List<Kamoku> getAll(Long termId) {
-        return new Select().from(Kamoku.class).where("TermId=?", termId).execute();
+        return query().where("TermId=?", termId).execute();
     }
+
     public static Kamoku get(String name,long termId) {
-        return new Select().from(Kamoku.class).where("name=? and TermId=?", name,termId).executeSingle();
+        return query().where("name=? and TermId=?", name, termId).executeSingle();
     }
-    public static Kamoku get(long Id) {
-        return new Select().from(Kamoku.class).where("id=?", Id).executeSingle();
+
+    public static Kamoku get(long id){
+        return Model.load(Kamoku.class, id);
     }
+
+    public static From query(){
+        return new Select().from(Kamoku.class);
+    }
+
     public void calculate(long termId) {
         List<Attendance> attendances = Attendance.getList(getId(), termId);
 
