@@ -18,8 +18,8 @@ public class Term extends Model {
     public String name;
 
     @Column(name = "dateStart")
-    public long dateStert;
-
+    public long dateStart;
+    
     @Column(name = "dateEnd")
     public long dateEnd;
 

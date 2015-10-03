@@ -190,7 +190,7 @@ public class KamokuListActivity extends AppCompatActivity {
     public List<Attendance> dateLook(long x) {
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(term.dateStert);
+        calendar.setTimeInMillis(term.dateStart);
 
         List<Attendance> attendances = new ArrayList<Attendance>();
 
