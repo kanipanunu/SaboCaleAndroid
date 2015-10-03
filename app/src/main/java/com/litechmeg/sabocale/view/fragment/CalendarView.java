@@ -16,9 +16,7 @@ import org.kazzz.view.calendar.OnCalendarSelectionListener;
 
 import java.util.Calendar;
 
-/**
- * Created by megukanipan on 2015/05/06.
- */
+
 public class CalendarView extends Fragment {
     org.kazzz.view.calendar.CalendarView calenderView;
 

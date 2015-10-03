@@ -112,7 +112,7 @@ public class DayAttendanceFragment extends Fragment {
                         String newName = editKamokuName.getText().toString();
                         Log.d("かもく", newName);
 
-                        Kamoku newKamoku = Kamoku.get(newName);
+                        Kamoku newKamoku = Kamoku.get(newName,termId);
                         // kamokuがなかったら、新しく作る
                         if (newKamoku == null) {
                             newKamoku = new Kamoku();
@@ -135,7 +135,7 @@ public class DayAttendanceFragment extends Fragment {
                     public void onClick(View v) {
                         // 科目の入力が新しい科目だったら
                         String newKamokuName = editKamokuName.getText().toString();
-                        Kamoku newKamoku = Kamoku.get(newKamokuName);
+                        Kamoku newKamoku = Kamoku.get(newKamokuName,termId);
                         if (newKamoku == null) {
                             newKamoku = new Kamoku();
                             newKamoku.name = newKamokuName;

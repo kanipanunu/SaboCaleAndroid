@@ -40,8 +40,8 @@ public class Kamoku extends Model {
     public static List<Kamoku> getAll(Long termId) {
         return new Select().from(Kamoku.class).where("TermId=?", termId).execute();
     }
-    public static Kamoku get(String name) {
-        return new Select().from(Kamoku.class).where("name=?", name).executeSingle();
+    public static Kamoku get(String name,long termId) {
+        return new Select().from(Kamoku.class).where("name=? and TermId=?", name,termId).executeSingle();
     }
     public static Kamoku get(long Id) {
         return new Select().from(Kamoku.class).where("id=?", Id).executeSingle();

@@ -205,14 +205,14 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
 						@Override
 						public void onClick(View v) {
 							subject.name = EditKamokuName.getText().toString();
-							if (Kamoku.get(subject.name) != null) {
+							if (Kamoku.get(subject.name,subject.termId) != null) {
 							} else {
 								Kamoku kamoku = new Kamoku();
 								kamoku.name = subject.name;
                                 kamoku.termId=subject.termId;
 								kamoku.save();
 							}
-							subject.kamokuId = (long) Kamoku.get(subject.name).getId();
+							subject.kamokuId = (long) Kamoku.get(subject.name,subject.termId).getId();
 							subject.save();
 						}
 					});
@@ -220,14 +220,14 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
 						@Override
 						public void onClick(View v) {
 							subject.name = EditKamokuName.getText().toString();
-							if (Kamoku.get(subject.name) != null) {
+							if (Kamoku.get(subject.name,subject.termId) != null) {
 							} else {
 								Kamoku kamoku = new Kamoku();
 								kamoku.name = subject.name;
 								kamoku.save();
 							}
-							subject.kamokuId = (long) Kamoku.get(subject.name).getId();
-                            subject.termId=(long)Kamoku.get(subject.name).termId;
+							subject.kamokuId = (long) Kamoku.get(subject.name,subject.termId).getId();
+                            subject.termId=(long)Kamoku.get(subject.name,subject.termId).termId;
 							subject.save();
 						}
 
@@ -235,14 +235,14 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
 					akikoma.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							if (Kamoku.get("free") == null) {
+							if (Kamoku.get("free",subject.termId) == null) {
 								Kamoku kamoku = new Kamoku();
 								kamoku.name = "free";
 								kamoku.save();
 							}
-							subject.kamokuId = Kamoku.get("free").getId();
+							subject.kamokuId = Kamoku.get("free",subject.termId).getId();
 							subject.name = "free";
-                            subject.termId=(long)Kamoku.get(subject.name).termId;
+                            subject.termId=(long)Kamoku.get(subject.name,subject.termId).termId;
                             subject.save();
 						}
 					});

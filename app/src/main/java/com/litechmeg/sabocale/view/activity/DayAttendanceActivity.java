@@ -44,12 +44,13 @@ public class DayAttendanceActivity extends Activity {
     Calendar calendar;
     Long termId;
 
-
     private OnPeriodClickListener OPCListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.setContentView(R.layout.fragment_day_attendance);
+
         getPreference();
 
 
@@ -80,11 +81,9 @@ public class DayAttendanceActivity extends Activity {
                 dialogView.setBackgroundColor(Color.rgb(0xff, 0xff, 0xff));
 
                 // Viewの関連付け
-
                 // 現在位置のKamokuを取得して名前を表示
                 final Kamoku kamoku = adapter.getItem(position);
                 final Attendance attendance = Attendance.get(date, position, termId);
-
                 final EditText editKamokuName = (EditText) dialogView.findViewById(R.id.editText1);
                 final Button ariButton = (Button) dialogView.findViewById(R.id.arikoma);
                 final Button nashiButton = (Button) dialogView.findViewById(R.id.akikoma);
@@ -113,7 +112,7 @@ public class DayAttendanceActivity extends Activity {
                         String newName = editKamokuName.getText().toString();
                         Log.d("かもく", newName);
 
-                        Kamoku newKamoku = Kamoku.get(newName);
+                        Kamoku newKamoku = Kamoku.get(newName,termId);
                         // kamokuがなかったら、新しく作る
                         if (newKamoku == null) {
                             newKamoku = new Kamoku();
@@ -136,7 +135,7 @@ public class DayAttendanceActivity extends Activity {
                     public void onClick(View v) {
                         // 科目の入力が新しい科目だったら
                         String newKamokuName = editKamokuName.getText().toString();
-                        Kamoku newKamoku = Kamoku.get(newKamokuName);
+                        Kamoku newKamoku = Kamoku.get(newKamokuName,termId);
                         if (newKamoku == null) {
                             newKamoku = new Kamoku();
                             newKamoku.name = newKamokuName;
@@ -203,10 +202,10 @@ public class DayAttendanceActivity extends Activity {
     }
 
     public void setDateText() {
-//        dateTextView.setText(calendar.get(Calendar.YEAR) + "年" + (calendar.get(Calendar.MONTH) + 1) + "月"
-//                + calendar.get(Calendar.DAY_OF_MONTH) + "日");
-//        // 曜日を表示
-//        dayOfWeekTextView.setText(new SimpleDateFormat("E", Locale.JAPAN).format(calendar.getTime()));
+        dateTextView.setText(calendar.get(Calendar.YEAR) + "年" + (calendar.get(Calendar.MONTH) + 1) + "月"
+                + calendar.get(Calendar.DAY_OF_MONTH) + "日");
+        // 曜日を表示
+        dayOfWeekTextView.setText(new SimpleDateFormat("E", Locale.JAPAN).format(calendar.getTime()));
     }
 
     public void getPreference() {
@@ -215,5 +214,3 @@ public class DayAttendanceActivity extends Activity {
     }
 
 }
-
-

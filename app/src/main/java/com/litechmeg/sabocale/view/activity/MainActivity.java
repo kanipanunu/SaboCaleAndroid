@@ -49,7 +49,6 @@ import java.util.List;
  * 選択した日の科目を表示する画面
  */
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
-    // TextView(なんのだろう？)
     MainTabPagerAdapter mainTabPagerAdapter;
 
     ViewPager mViewPager;
@@ -57,10 +56,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     ActionBarDrawerToggle toggle;
     ListView termListView;
-    TermListArrayAdapter termAdapter;
-    // 日付
+    TermListArrayAdapter termAdapter;//navigationどろわーの
     Calendar calendar;
-    // リスト(不要？)
     String date;
 
     SharedPreferences pref;
@@ -93,7 +90,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         }
         getSupportActionBar().getTitle();
 
-        mainTabPagerAdapter = new MainTabPagerAdapter(getSupportFragmentManager());
+        mainTabPagerAdapter = new MainTabPagerAdapter(getSupportFragmentManager());//ぺいじゃー
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mainTabPagerAdapter);
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -135,23 +132,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final Term term = termAdapter.getItem(position);
-                AlertDialog.Builder builder =new AlertDialog.Builder(getApplicationContext());
-                View v = getLayoutInflater().inflate(R.layout.dialog_term_select, (ViewGroup)findViewById(R.id.layout_Dialog));
-                v.setBackgroundColor(Color.rgb(0xff, 0xff, 0xff));
-                TextView text=(TextView)v.findViewById(R.id.selectText);
-                text.setText("表示するタームを" + term.name + "にしますか？");
-               Button bt=(Button)v.findViewById(R.id.hai);
-                       bt.setOnClickListener(new OnClickListener() {
-                   @Override
-                   public void onClick(View v) {
                        SharedPreferences.Editor editor = pref.edit();
                        // FIXME SPConfig内の変数に置き換える
                        editor.putLong("TermId", term.getId());
                        editor.apply();
                        Log.d("ターム選択", term.name);
-                   }
-               });
-            builder.show();
+                termListView.setAdapter(termAdapter);
             }
         });
         termListView.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -295,7 +281,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
                     // もし空白でなければ(空白はスルー)
                     if (!jikan[i].equals("")) {
-                        kamoku = Kamoku.get(jikan[i]);
+                        kamoku = Kamoku.get(jikan[i],term.getId());
                         // 名前が jikan[j] のKamokuをロード
                         // なければ新しく作る
                         if (kamoku == null) {
@@ -306,7 +292,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                         }
                         Log.d(kamoku.name, jikan[i]);
                     } else {
-                        kamoku = Kamoku.get("free");
+                        kamoku = Kamoku.get("free",term.getId());
                         if (kamoku == null) {
                             kamoku = new Kamoku();
                             kamoku.name = "free";
@@ -373,7 +359,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         mViewPager.setCurrentItem(tab.getPosition());
-
     }
 
     @Override
