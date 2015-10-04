@@ -44,7 +44,7 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, List<Attenda
     @Override
     protected List<Attendance> doInBackground(String... params) {
         //関連づけ
-        long dateStart = term.dateStart;
+        long dateStart = term.dateStert;
         long dateEnd = term.dateEnd;
         Log.d("", "Start: "+dateStart+"\n"+"End: "+dateEnd) ;
         int firstDayOfWeek = term.dayOfWeek;

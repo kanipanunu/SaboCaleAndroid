@@ -1,11 +1,6 @@
-local.properties
-
-*.iml
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/libraries/
-
 .gradle
-app/build/
-
-*/build/
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
