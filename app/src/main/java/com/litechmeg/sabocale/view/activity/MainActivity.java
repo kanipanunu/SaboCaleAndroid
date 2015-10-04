@@ -27,7 +27,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Kamoku;
@@ -230,7 +229,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                     Calendar c = Calendar.getInstance();
 
                     c.set(year1, month1, date1);
-                    term.dateStert = (c.getTimeInMillis()) - (c.getTimeInMillis() % (60 * 60 * 1000 * 24));
+                    term.dateStart = (c.getTimeInMillis()) - (c.getTimeInMillis() % (60 * 60 * 1000 * 24));
                     Log.d("", "Start: " + year1 + "," + month1 + "," + date1);
 
                     c.set(year2, month2, date2);
