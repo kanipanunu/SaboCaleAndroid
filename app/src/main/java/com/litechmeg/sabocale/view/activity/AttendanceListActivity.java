@@ -52,7 +52,6 @@ public class AttendanceListActivity extends Activity {//
         Kamoku kamoku = Kamoku.load(Kamoku.class, kamokuid);
         kamokuName.setText(kamoku.name + "のヒストリー");
         if (Kamoku.getAll().size() > 0) {
-            StartActivity.reload(this, termId);
             // addapterの設定。
             List<Attendance> getList = Attendance.getList(kamoku.getId(), termId);
             List<Attendance> putlist = new ArrayList<Attendance>();
