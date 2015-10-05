@@ -17,7 +17,7 @@ import org.kazzz.view.calendar.OnCalendarSelectionListener;
 import java.util.Calendar;
 
 
-public class CalendarView extends Fragment {
+public class CalendarFragment extends Fragment {
     org.kazzz.view.calendar.CalendarView calenderView;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

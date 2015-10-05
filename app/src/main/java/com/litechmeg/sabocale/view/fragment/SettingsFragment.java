@@ -11,7 +11,7 @@ import com.litechmeg.sabocale.R;
 /**
  * Created by megukanipan on 2015/04/23.
  */
-public class SettingsView extends Fragment{
+public class SettingsFragment extends Fragment{
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // 第３引数のbooleanは"container"にreturnするViewを追加するかどうか
