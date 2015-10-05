@@ -19,7 +19,7 @@ public class Term extends Model {
 
     @Column(name = "dateStart")
     public long dateStart;
-    
+
     @Column(name = "dateEnd")
     public long dateEnd;
 
