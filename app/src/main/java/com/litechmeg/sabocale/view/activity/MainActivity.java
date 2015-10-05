@@ -33,6 +33,7 @@ import com.litechmeg.sabocale.model.Kamoku;
 import com.litechmeg.sabocale.model.Subject;
 import com.litechmeg.sabocale.model.Term;
 import com.litechmeg.sabocale.util.AttendanceAsyncTask;
+import com.litechmeg.sabocale.util.PrefUtils;
 import com.litechmeg.sabocale.view.adapter.MainTabPagerAdapter;
 import com.litechmeg.sabocale.view.adapter.TermListArrayAdapter;
 
@@ -67,9 +68,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day_attendance);
 
-        // FIXME SPConfig内の変数に置き換える
-        pref = getSharedPreferences("TermSelect", MODE_PRIVATE);
-        term = Term.get(pref.getLong("TermId", 1));
+        pref = getSharedPreferences(PrefUtils.PREF_NAME, MODE_PRIVATE);
+        term = Term.get(pref.getLong(PrefUtils.PREF_KEY_TERM_ID, 1));
 
         /**
          * テスト
@@ -132,8 +132,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final Term term = termAdapter.getItem(position);
                        SharedPreferences.Editor editor = pref.edit();
-                       // FIXME SPConfig内の変数に置き換える
-                       editor.putLong("TermId", term.getId());
+                       editor.putLong(PrefUtils.PREF_KEY_TERM_ID, term.getId());
                        editor.apply();
                        Log.d("ターム選択", term.name);
                 termListView.setAdapter(termAdapter);
@@ -251,7 +250,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                     asyncTaskDialog.show();
 
                     SharedPreferences.Editor editor = pref.edit();
-                    editor.putLong("TermId", term.getId());
+                    editor.putLong(PrefUtils.PREF_KEY_TERM_ID, term.getId());
                     editor.apply();
                 }
 

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Kamoku;
+import com.litechmeg.sabocale.util.PrefUtils;
 import com.litechmeg.sabocale.view.adapter.KamokuListArrayAdapter;
 
 import java.text.SimpleDateFormat;
@@ -43,8 +44,6 @@ public class DayAttendanceActivity extends Activity {
     long date;
     Calendar calendar;
     Long termId;
-
-    private OnPeriodClickListener OPCListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +90,7 @@ public class DayAttendanceActivity extends Activity {
 
                 editKamokuName.setText(kamoku.name + "");
 
-                if (attendance.status == 4) {
+                if (attendance.status == Attendance.STATUS_KYUKO) {
                     nashiButton.setAlpha(1f);
                     ariButton.setAlpha(0.3f);
                 } else {
@@ -172,10 +171,6 @@ public class DayAttendanceActivity extends Activity {
 
 
     public void setDataToAdapter() {
-
-        //しぇあぷりを取得する
-        getPreference();
-
         List<Attendance> attendances = Attendance.getAll(date, termId);
 
         ArrayList<Kamoku> kamokus = new ArrayList<Kamoku>();
@@ -190,11 +185,7 @@ public class DayAttendanceActivity extends Activity {
         adapter.addAll(kamokus);
     }
 
-    public interface OnPeriodClickListener {
-        public void OnPeriodClickListener(Uri uri);
-    }
-
-    public String calendarToDateFormat(Calendar calendar) {
+    public String formatCalendar(Calendar calendar) {
         return String.format("%04d%02d%02d", // yyyyMMdd形式に表示
                 calendar.get(Calendar.YEAR), // 年
                 calendar.get(Calendar.MONTH), // 月
@@ -209,8 +200,8 @@ public class DayAttendanceActivity extends Activity {
     }
 
     public void getPreference() {
-        SharedPreferences pref = getSharedPreferences("TermSelect", MODE_PRIVATE);
-        termId = pref.getLong("TermId", 0);
+        SharedPreferences pref = getSharedPreferences(PrefUtils.PREF_NAME, MODE_PRIVATE);
+        termId = pref.getLong(PrefUtils.PREF_KEY_TERM_ID, 0);
     }
 
 }

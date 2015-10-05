@@ -23,6 +23,7 @@ import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Kamoku;
 import com.litechmeg.sabocale.model.Term;
+import com.litechmeg.sabocale.util.PrefUtils;
 import com.litechmeg.sabocale.view.adapter.KamokuListArrayAdapter;
 
 import java.util.ArrayList;
@@ -43,9 +44,6 @@ public class KamokuListActivity extends AppCompatActivity {
 
     SharedPreferences pref;
 
-    final static String SP_NAME = "SELECT_TERM";
-    final static String SP_KEY_TERM_ID = "TermId";
-
     final static String INTENT_KEY_KAMOKU_ID = "kamokuId";
 
     long termId;
@@ -56,8 +54,8 @@ public class KamokuListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kamoku_list);
 
-        pref = getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        termId = pref.getLong(SP_KEY_TERM_ID, 0);
+        pref = getSharedPreferences(PrefUtils.PREF_NAME, MODE_PRIVATE);
+        termId = pref.getLong(PrefUtils.PREF_KEY_TERM_ID, 0);
         term = Term.get(termId);
 
         // Adapterの設定

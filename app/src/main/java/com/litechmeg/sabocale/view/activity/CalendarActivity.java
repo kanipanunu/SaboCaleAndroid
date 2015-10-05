@@ -28,8 +28,6 @@ public class CalendarActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_calendar);
 
-
-
         // CalendarViewを表示するだけ
 		CalendarView calenderView = (CalendarView) findViewById(R.id.Calendar);
 		WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
