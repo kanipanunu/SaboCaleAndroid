@@ -60,7 +60,7 @@ public class DayAttendanceActivity extends Activity {
 
         calendar = Calendar.getInstance();
         Intent i = getIntent();
-        calendar.setTimeInMillis(i.getLongExtra("selection",calendar.getTimeInMillis()));
+        calendar.setTimeInMillis(i.getLongExtra("selection", calendar.getTimeInMillis()));
 
         // 日付を文字に変換
         date = (calendar.getTimeInMillis()) - (calendar.getTimeInMillis()) % (3600000 * 24);
@@ -111,7 +111,7 @@ public class DayAttendanceActivity extends Activity {
                         String newName = editKamokuName.getText().toString();
                         Log.d("かもく", newName);
 
-                        Kamoku newKamoku = Kamoku.get(newName,termId);
+                        Kamoku newKamoku = Kamoku.get(newName, termId);
                         // kamokuがなかったら、新しく作る
                         if (newKamoku == null) {
                             newKamoku = new Kamoku();
@@ -134,7 +134,7 @@ public class DayAttendanceActivity extends Activity {
                     public void onClick(View v) {
                         // 科目の入力が新しい科目だったら
                         String newKamokuName = editKamokuName.getText().toString();
-                        Kamoku newKamoku = Kamoku.get(newKamokuName,termId);
+                        Kamoku newKamoku = Kamoku.get(newKamokuName, termId);
                         if (newKamoku == null) {
                             newKamoku = new Kamoku();
                             newKamoku.name = newKamokuName;

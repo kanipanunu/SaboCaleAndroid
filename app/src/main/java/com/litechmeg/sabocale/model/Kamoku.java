@@ -51,15 +51,15 @@ public class Kamoku extends Model {
         return query().where("TermId=?", termId).execute();
     }
 
-    public static Kamoku get(String name,long termId) {
+    public static Kamoku get(String name, long termId) {
         return query().where("name=? and TermId=?", name, termId).executeSingle();
     }
 
-    public static Kamoku get(long id){
+    public static Kamoku get(long id) {
         return Model.load(Kamoku.class, id);
     }
 
-    public static From query(){
+    public static From query() {
         return new Select().from(Kamoku.class);
     }
 

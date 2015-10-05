@@ -46,7 +46,7 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, List<Attenda
         //関連づけ
         long dateStart = term.dateStart;
         long dateEnd = term.dateEnd;
-        Log.d("", "Start: "+dateStart+"\n"+"End: "+dateEnd) ;
+        Log.d("", "Start: " + dateStart + "\n" + "End: " + dateEnd);
         int firstDayOfWeek = term.dayOfWeek;
 
         Calendar startCalendar = Calendar.getInstance();
@@ -55,11 +55,11 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, List<Attenda
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.setTimeInMillis(dateEnd);
 
-        dialog.setMax((int)(dateEnd - dateStart));
+        dialog.setMax((int) (dateEnd - dateStart));
 
         while (startCalendar.before(endCalendar)) {
             // ダイアログを更新
-            dialog.setProgress((int)(startCalendar.getTimeInMillis() - dateStart));
+            dialog.setProgress((int) (startCalendar.getTimeInMillis() - dateStart));
 
             long date = startCalendar.getTimeInMillis();
             List<Subject> subjects = Subject.getAll(startCalendar.get(Calendar.DAY_OF_WEEK), term.getId());
@@ -95,7 +95,6 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, List<Attenda
 
             startCalendar.add(Calendar.DATE, 1);
         }
-
 
 
         return Attendance.getAll();

@@ -23,48 +23,48 @@ import com.litechmeg.sabocale.R;
  */
 public class CalendarActivity extends Activity {
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_calendar);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_calendar);
 
         // CalendarViewを表示するだけ
-		CalendarView calenderView = (CalendarView) findViewById(R.id.Calendar);
-		WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-		Display disp = wm.getDefaultDisplay();
-		Point size = new Point();
-		disp.getSize(size);
-		LayoutParams params = new LinearLayout.LayoutParams(size.x, (int) ((size.x) * 1.4));
-		calenderView.setLayoutParams(params);
+        CalendarView calenderView = (CalendarView) findViewById(R.id.Calendar);
+        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+        Display disp = wm.getDefaultDisplay();
+        Point size = new Point();
+        disp.getSize(size);
+        LayoutParams params = new LinearLayout.LayoutParams(size.x, (int) ((size.x) * 1.4));
+        calenderView.setLayoutParams(params);
 
-		calenderView.addOnCalendarSelectionListener(new OnCalendarSelectionListener() {
+        calenderView.addOnCalendarSelectionListener(new OnCalendarSelectionListener() {
 
-			@Override
-			public void onCalendarSelection(CalendarSelectionEvent event) {
-				DateInfo dateInfo = event.getDateInfo();
+            @Override
+            public void onCalendarSelection(CalendarSelectionEvent event) {
+                DateInfo dateInfo = event.getDateInfo();
 
-				// XXX なんだろう？
-				String m = getIntent().getStringExtra("め");
+                // XXX なんだろう？
+                String m = getIntent().getStringExtra("め");
 
-				// 念のためnullチェック
-				if (dateInfo != null) {
-					// Calendarを取得
-					Calendar calendar = Calendar.getInstance();
-					calendar.set(dateInfo.getYear(), dateInfo.getMonth() - 1, dateInfo.getDay());
+                // 念のためnullチェック
+                if (dateInfo != null) {
+                    // Calendarを取得
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(dateInfo.getYear(), dateInfo.getMonth() - 1, dateInfo.getDay());
 
-					if (m == null) {
-						Intent intent = new Intent(CalendarActivity.this, MainActivity.class);
-						intent.putExtra("selection", calendar);
-						startActivity(intent);
-					} else {
-						Intent intent = new Intent();
-						intent.putExtra("selection", calendar);
-						setResult(RESULT_OK, intent);
-						finish();
-					}
-				}
-			}
+                    if (m == null) {
+                        Intent intent = new Intent(CalendarActivity.this, MainActivity.class);
+                        intent.putExtra("selection", calendar);
+                        startActivity(intent);
+                    } else {
+                        Intent intent = new Intent();
+                        intent.putExtra("selection", calendar);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                }
+            }
 
-		});
-	}
+        });
+    }
 }

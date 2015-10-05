@@ -40,10 +40,10 @@ public class SettingsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting_cal);
     }
-        /**
-         * 時間割ファイルをロードする(もしかしたら不要になるかも)
-         */
 
+    /**
+     * 時間割ファイルをロードする(もしかしたら不要になるかも)
+     */
     public void startsellect(View v) {
         Intent intent = new Intent(SettingsActivity.this, CalendarActivity.class);
         intent.putExtra("め", "setting");
@@ -119,7 +119,6 @@ public class SettingsActivity extends Activity {
 
 
     }
-
 
 
 }

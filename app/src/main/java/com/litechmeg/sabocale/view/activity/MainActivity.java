@@ -131,10 +131,10 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final Term term = termAdapter.getItem(position);
-                       SharedPreferences.Editor editor = pref.edit();
-                       editor.putLong(PrefUtils.PREF_KEY_TERM_ID, term.getId());
-                       editor.apply();
-                       Log.d("ターム選択", term.name);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putLong(PrefUtils.PREF_KEY_TERM_ID, term.getId());
+                editor.apply();
+                Log.d("ターム選択", term.name);
                 termListView.setAdapter(termAdapter);
             }
         });
@@ -279,7 +279,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
                     // もし空白でなければ(空白はスルー)
                     if (!jikan[i].equals("")) {
-                        kamoku = Kamoku.get(jikan[i],term.getId());
+                        kamoku = Kamoku.get(jikan[i], term.getId());
                         // 名前が jikan[j] のKamokuをロード
                         // なければ新しく作る
                         if (kamoku == null) {
@@ -290,7 +290,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                         }
                         Log.d(kamoku.name, jikan[i]);
                     } else {
-                        kamoku = Kamoku.get("free",term.getId());
+                        kamoku = Kamoku.get("free", term.getId());
                         if (kamoku == null) {
                             kamoku = new Kamoku();
                             kamoku.name = "free";

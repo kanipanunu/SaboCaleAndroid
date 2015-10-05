@@ -57,7 +57,7 @@ public class Subject extends Model {
         return query().where("dayOfWeek = ? and period = ? and termId = ?", dayOfWeek, period, termId).executeSingle();
     }
 
-    public static From query(){
+    public static From query() {
         return new Select().from(Subject.class);
     }
 }
