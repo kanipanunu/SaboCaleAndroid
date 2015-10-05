@@ -1,4 +1,4 @@
-package com.litechmeg.sabocale.util;
+package com.litechmeg.sabocale.task;
 
 import android.app.ProgressDialog;
 import android.app.SearchManager;
