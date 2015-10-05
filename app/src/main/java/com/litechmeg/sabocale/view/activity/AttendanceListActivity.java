@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Kamoku;
+import com.litechmeg.sabocale.util.IntentUtils;
 import com.litechmeg.sabocale.util.PrefUtils;
 import com.litechmeg.sabocale.view.adapter.AttendanceListArrayAdapter;
 
@@ -27,23 +28,19 @@ public class AttendanceListActivity extends AppCompatActivity {
 
     AttendanceListArrayAdapter adapter;
 
-    SharedPreferences pref;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendance_list);
 
-        pref = getSharedPreferences(PrefUtils.PREF_NAME, MODE_PRIVATE);
-
-        termId = pref.getLong(PrefUtils.PREF_KEY_TERM_ID, 0);
+        termId = PrefUtils.getTermId(this);
 
         listView = (ListView) findViewById(R.id.listView1);
         kamokuName = (TextView) findViewById(R.id.kamokuName);
 
         Intent intent = getIntent();
         if (intent != null) {
-            kamokuId = intent.getLongExtra("め", -1);
+            kamokuId = intent.getLongExtra(IntentUtils.KEY_KAMOKU_ID, -1);
         }
 
         Kamoku kamoku = Kamoku.load(Kamoku.class, kamokuId);

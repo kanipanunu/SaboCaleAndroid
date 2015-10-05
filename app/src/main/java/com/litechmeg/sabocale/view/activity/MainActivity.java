@@ -60,7 +60,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     Calendar calendar;
     String date;
 
-    SharedPreferences pref;
     Term term;
 
     @Override
@@ -68,8 +67,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day_attendance);
 
-        pref = getSharedPreferences(PrefUtils.PREF_NAME, MODE_PRIVATE);
-        term = Term.get(pref.getLong(PrefUtils.PREF_KEY_TERM_ID, 1));
+        term = Term.get(PrefUtils.getTermId(this));
 
         /**
          * テスト
@@ -131,9 +129,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final Term term = termAdapter.getItem(position);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putLong(PrefUtils.PREF_KEY_TERM_ID, term.getId());
-                editor.apply();
+                PrefUtils.setTermId(MainActivity.this, term.getId());
                 Log.d("ターム選択", term.name);
                 termListView.setAdapter(termAdapter);
             }
@@ -249,9 +245,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
                     asyncTaskDialog.show();
 
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.putLong(PrefUtils.PREF_KEY_TERM_ID, term.getId());
-                    editor.apply();
+                    PrefUtils.setTermId(MainActivity.this, term.getId());
                 }
 
             }

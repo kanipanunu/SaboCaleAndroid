@@ -34,22 +34,10 @@ import java.util.List;
 
 public class EditActivity extends ActionBarActivity implements ActionBar.TabListener {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which
-     * will keep every loaded fragment in memory. If this becomes too memory
-     * intensive, it may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     // あだぷだー
     SectionsPagerAdapter mSectionsPagerAdapter;
 
-    /**
-     * The {@link android.support.v4.view.ViewPager} that will host the section contents.
-     */
     ViewPager mViewPager;
-    SharedPreferences pref;
 
     Term term;
 
@@ -57,8 +45,6 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
-
-        pref = getSharedPreferences(PrefUtils.PREF_NAME, MODE_PRIVATE);
 
         Intent intent = getIntent();
         long Id = intent.getLongExtra("タームの生成", 0);
@@ -254,7 +240,7 @@ public class EditActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     public void back(View v) {
-        List<Subject> subjects = Subject.getAll(pref.getLong(PrefUtils.PREF_KEY_TERM_ID, 1));
+        List<Subject> subjects = Subject.getAll(PrefUtils.getTermId(this));
         for (int i = 0; i < subjects.size(); i++) {
             subjects.get(i).save();
         }

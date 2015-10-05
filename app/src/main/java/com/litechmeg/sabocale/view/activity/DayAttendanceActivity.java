@@ -43,15 +43,14 @@ public class DayAttendanceActivity extends Activity {
 
     long date;
     Calendar calendar;
-    Long termId;
+    long termId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.fragment_day_attendance);
 
-        getPreference();
-
+        termId = PrefUtils.getTermId(this);
 
         // Viewを関連付け
         dateTextView = (TextView) findViewById(R.id.date);
@@ -198,10 +197,4 @@ public class DayAttendanceActivity extends Activity {
         // 曜日を表示
         dayOfWeekTextView.setText(new SimpleDateFormat("E", Locale.JAPAN).format(calendar.getTime()));
     }
-
-    public void getPreference() {
-        SharedPreferences pref = getSharedPreferences(PrefUtils.PREF_NAME, MODE_PRIVATE);
-        termId = pref.getLong(PrefUtils.PREF_KEY_TERM_ID, 0);
-    }
-
 }

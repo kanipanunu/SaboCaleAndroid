@@ -23,6 +23,7 @@ import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Kamoku;
 import com.litechmeg.sabocale.model.Term;
+import com.litechmeg.sabocale.util.IntentUtils;
 import com.litechmeg.sabocale.util.PrefUtils;
 import com.litechmeg.sabocale.view.adapter.KamokuListArrayAdapter;
 
@@ -42,10 +43,6 @@ public class KamokuListActivity extends AppCompatActivity {
     ListView listview;
     KamokuListArrayAdapter adapter;
 
-    SharedPreferences pref;
-
-    final static String INTENT_KEY_KAMOKU_ID = "kamokuId";
-
     long termId;
     Term term;
 
@@ -54,8 +51,7 @@ public class KamokuListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kamoku_list);
 
-        pref = getSharedPreferences(PrefUtils.PREF_NAME, MODE_PRIVATE);
-        termId = pref.getLong(PrefUtils.PREF_KEY_TERM_ID, 0);
+        termId = PrefUtils.getTermId(this);
         term = Term.get(termId);
 
         // Adapterの設定
@@ -159,7 +155,7 @@ public class KamokuListActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(KamokuListActivity.this, AttendanceListActivity.class);
-                        intent.putExtra(INTENT_KEY_KAMOKU_ID, kamoku.getId());
+                        intent.putExtra(IntentUtils.KEY_KAMOKU_ID, kamoku.getId());
                         startActivity(intent);
 
                         dialog.dismiss();
@@ -175,7 +171,7 @@ public class KamokuListActivity extends AppCompatActivity {
                 final Kamoku kamoku = adapter.getItem(position);
 
                 Intent intent = new Intent(KamokuListActivity.this, AttendanceListActivity.class);
-                intent.putExtra(INTENT_KEY_KAMOKU_ID, kamoku.getId());
+                intent.putExtra(IntentUtils.KEY_KAMOKU_ID, kamoku.getId());
                 startActivity(intent);
 
                 return false;
