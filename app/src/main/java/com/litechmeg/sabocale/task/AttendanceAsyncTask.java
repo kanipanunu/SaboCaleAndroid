@@ -34,11 +34,12 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, List<Attenda
 
     @Override
     protected void onPreExecute() {
-
+        dialog.show();
     }
 
     @Override
     public void onCancel() {
+        dialog.dismiss();
     }
 
     @Override
@@ -96,7 +97,6 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, List<Attenda
             startCalendar.add(Calendar.DATE, 1);
         }
 
-
         return Attendance.getAll();
     }
 
@@ -104,7 +104,6 @@ public class AttendanceAsyncTask extends AsyncTask<String, Integer, List<Attenda
     protected void onPostExecute(List<Attendance> result) {
         super.onPostExecute(result);
         System.out.println("onPostExecute");
-
 
         dialog.dismiss();
     }

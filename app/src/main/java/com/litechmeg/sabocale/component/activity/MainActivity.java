@@ -231,6 +231,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                     Log.d("", "End: " + year2 + "," + month2 + "," + date2);
 
                     term.save();
+                    PrefUtils.setTermId(MainActivity.this, term.getId());
+
                     ProgressDialog asyncTaskDialog = new ProgressDialog(MainActivity.this);
                     asyncTaskDialog.setTitle("時間割のよみこみをしています。");
                     asyncTaskDialog.setMessage("保存中…");
@@ -240,11 +242,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
                     AttendanceAsyncTask asyncTask = new AttendanceAsyncTask(getApplicationContext(), term, asyncTaskDialog);
                     asyncTask.execute("");
+
                     dialog.dismiss();
-
-                    asyncTaskDialog.show();
-
-                    PrefUtils.setTermId(MainActivity.this, term.getId());
                 }
 
             }
