@@ -2,10 +2,9 @@ package com.litechmeg.sabocale.component.fragment;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +16,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.litechmeg.sabocale.R;
+import com.litechmeg.sabocale.component.activity.AttendanceListActivity;
+import com.litechmeg.sabocale.component.adapter.KamokuListArrayAdapter;
 import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Kamoku;
-import com.litechmeg.sabocale.component.adapter.KamokuListArrayAdapter;
-import com.litechmeg.sabocale.component.activity.AttendanceListActivity;
+import com.litechmeg.sabocale.util.PrefUtils;
 
 import java.util.Comparator;
 import java.util.List;
@@ -42,11 +42,9 @@ public class KamokuListFragment extends Fragment{
         //trueにすると最終的なlayoutに再度、同じView groupが表示されてしまうのでfalseでOKらしい
         View v=inflater.inflate(R.layout.activity_kamoku_list, null, false);
 
-        SharedPreferences pref = getActivity().getSharedPreferences("TermSelect", getActivity().MODE_PRIVATE);
-
         listview = (ListView) v.findViewById(R.id.listView1);
 
-        final long termId=pref.getLong("TermId",0);
+        final long termId= PrefUtils.getTermId(getActivity());
 
         // Adapterの設定
         adapter = new KamokuListArrayAdapter(getActivity(), R.layout.activity_kamoku_list, 0,termId, 1);

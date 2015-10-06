@@ -20,6 +20,7 @@ import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Kamoku;
 import com.litechmeg.sabocale.component.adapter.KamokuListArrayAdapter;
+import com.litechmeg.sabocale.util.PrefUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,19 +42,16 @@ public class DayAttendanceFragment extends Fragment {
 
     long date;
     Calendar calendar;
-    Long termId;
-
-
-    private OnPeriodClickListener OPCListener;
+    long termId;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // 第３引数のbooleanは"container"にreturnするViewを追加するかどうか
         // trueにすると最終的なlayoutに再度、同じView groupが表示されてしまうのでfalseでOKらしい
-        getPreference();
+
+        termId = PrefUtils.getTermId(getActivity());
 
         View v = inflater.inflate(R.layout.fragment_day_attendance, container, false);
-
 
         // Viewを関連付け
         dateTextView = (TextView) v.findViewById(R.id.date);
@@ -174,9 +172,6 @@ public class DayAttendanceFragment extends Fragment {
 
     public void setDataToAdapter() {
 
-        //しぇあぷりを取得する
-        getPreference();
-
         List<Attendance> attendances = Attendance.getAll(date, termId);
 
         ArrayList<Kamoku> kamokus = new ArrayList<Kamoku>();
@@ -191,27 +186,10 @@ public class DayAttendanceFragment extends Fragment {
         adapter.addAll(kamokus);
     }
 
-    public interface OnPeriodClickListener {
-        public void OnPeriodClickListener(Uri uri);
-    }
-
-    public String calendarToDateFormat(Calendar calendar) {
-        return String.format("%04d%02d%02d", // yyyyMMdd形式に表示
-                calendar.get(Calendar.YEAR), // 年
-                calendar.get(Calendar.MONTH), // 月
-                calendar.get(Calendar.DAY_OF_MONTH)); // 日
-    }
-
     public void setDateText() {
         dateTextView.setText(calendar.get(Calendar.YEAR) + "年" + (calendar.get(Calendar.MONTH) + 1) + "月"
                 + calendar.get(Calendar.DAY_OF_MONTH) + "日");
         // 曜日を表示
         dayOfWeekTextView.setText(new SimpleDateFormat("E", Locale.JAPAN).format(calendar.getTime()));
     }
-
-    public void getPreference() {
-        SharedPreferences pref = getActivity().getSharedPreferences("TermSelect", getActivity().MODE_PRIVATE);
-        termId = pref.getLong("TermId", 0);
-    }
-
 }

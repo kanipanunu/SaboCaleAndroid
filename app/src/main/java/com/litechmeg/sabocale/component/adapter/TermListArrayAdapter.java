@@ -11,37 +11,36 @@ import android.widget.TextView;
 
 import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Term;
+import com.litechmeg.sabocale.util.PrefUtils;
 
 /**
  * Created by megukanipan on 2015/03/26.
  */
-public class TermListArrayAdapter extends ArrayAdapter<Term>{
-    SharedPreferences pref;
+public class TermListArrayAdapter extends ArrayAdapter<Term> {
 
     LayoutInflater layoutInflater_;
-    public TermListArrayAdapter(Context context,int resourse){
+
+    public TermListArrayAdapter(Context context, int resourse) {
         super(context, resourse);
         layoutInflater_ = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
 
-        public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         // layoutInflaterでリソースからViewを生成
         if (null == convertView) {
             convertView = layoutInflater_.inflate(R.layout.list_item_term, null);
         }
 
         final Term term = getItem(position);
-        pref = getContext().getSharedPreferences("TermSelect", Context.MODE_PRIVATE);
-        //
-        if(term.getId()==pref.getLong("TermId", 1)){
+        if (term.getId() == PrefUtils.getTermId(getContext())) {
             convertView.setBackgroundColor(getContext().getResources().getColor(R.color.primary));
-        }else {
+        } else {
             convertView.setBackgroundColor(getContext().getResources().getColor(R.color.primary_light));
         }
 
-        TextView termName=(TextView)convertView.findViewById(R.id.termname);
+        TextView termName = (TextView) convertView.findViewById(R.id.termname);
         convertView.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 150));
         termName.setText(term.name);
 //        termName.setOnClickListener(new View.OnClickListener() {
