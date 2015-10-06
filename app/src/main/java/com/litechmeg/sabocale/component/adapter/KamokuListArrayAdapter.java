@@ -1,4 +1,4 @@
-package com.litechmeg.sabocale.view.adapter;
+package com.litechmeg.sabocale.component.adapter;
 
 import java.util.Calendar;
 
@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Kamoku;
-import com.litechmeg.sabocale.model.Term;
 
 public class KamokuListArrayAdapter extends ArrayAdapter<Kamoku> {
 	// activityモード

@@ -1,4 +1,4 @@
-package com.litechmeg.sabocale.view.fragment;
+package com.litechmeg.sabocale.component.fragment;
 
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Kamoku;
-import com.litechmeg.sabocale.view.adapter.KamokuListArrayAdapter;
+import com.litechmeg.sabocale.component.adapter.KamokuListArrayAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

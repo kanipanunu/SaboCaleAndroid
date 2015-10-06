@@ -1,4 +1,4 @@
-package com.litechmeg.sabocale.view.adapter;
+package com.litechmeg.sabocale.component.adapter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

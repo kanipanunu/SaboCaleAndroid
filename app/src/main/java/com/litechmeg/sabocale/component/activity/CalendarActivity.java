@@ -1,4 +1,4 @@
-package com.litechmeg.sabocale.view.activity;
+package com.litechmeg.sabocale.component.activity;
 
 import java.util.Calendar;
 

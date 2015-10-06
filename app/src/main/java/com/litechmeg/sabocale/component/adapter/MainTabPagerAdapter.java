@@ -1,13 +1,13 @@
-package com.litechmeg.sabocale.view.adapter;
+package com.litechmeg.sabocale.component.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.litechmeg.sabocale.view.fragment.CalendarFragment;
-import com.litechmeg.sabocale.view.fragment.DayAttendanceFragment;
-import com.litechmeg.sabocale.view.fragment.KamokuListFragment;
-import com.litechmeg.sabocale.view.fragment.SettingsFragment;
+import com.litechmeg.sabocale.component.fragment.CalendarFragment;
+import com.litechmeg.sabocale.component.fragment.DayAttendanceFragment;
+import com.litechmeg.sabocale.component.fragment.KamokuListFragment;
+import com.litechmeg.sabocale.component.fragment.SettingsFragment;
 
 /**
  * Created by megukanipan on 2015/04/18.

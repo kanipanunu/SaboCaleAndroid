@@ -1,4 +1,4 @@
-package com.litechmeg.sabocale.view.fragment;
+package com.litechmeg.sabocale.component.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

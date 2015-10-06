@@ -1,4 +1,4 @@
-package com.litechmeg.sabocale.view.activity;
+package com.litechmeg.sabocale.component.activity;
 
 import java.util.Calendar;
 
@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Term;
-import com.litechmeg.sabocale.view.adapter.KamokuListArrayAdapter;
+import com.litechmeg.sabocale.component.adapter.KamokuListArrayAdapter;
 
 /**
  * 時間割を読み込む画面

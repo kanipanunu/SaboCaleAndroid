@@ -1,7 +1,6 @@
-package com.litechmeg.sabocale.view.activity;
+package com.litechmeg.sabocale.component.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
@@ -12,7 +11,7 @@ import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Kamoku;
 import com.litechmeg.sabocale.util.IntentUtils;
 import com.litechmeg.sabocale.util.PrefUtils;
-import com.litechmeg.sabocale.view.adapter.AttendanceListArrayAdapter;
+import com.litechmeg.sabocale.component.adapter.AttendanceListArrayAdapter;
 
 import java.util.Collections;
 import java.util.Comparator;

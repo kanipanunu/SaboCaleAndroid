@@ -1,4 +1,4 @@
-package com.litechmeg.sabocale.view.fragment;
+package com.litechmeg.sabocale.component.fragment;
 
 import android.app.Activity;
 import android.net.Uri;

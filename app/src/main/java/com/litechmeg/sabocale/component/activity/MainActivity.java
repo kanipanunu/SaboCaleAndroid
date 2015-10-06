@@ -1,4 +1,4 @@
-package com.litechmeg.sabocale.view.activity;
+package com.litechmeg.sabocale.component.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -33,8 +33,8 @@ import com.litechmeg.sabocale.model.Subject;
 import com.litechmeg.sabocale.model.Term;
 import com.litechmeg.sabocale.task.AttendanceAsyncTask;
 import com.litechmeg.sabocale.util.PrefUtils;
-import com.litechmeg.sabocale.view.adapter.MainTabPagerAdapter;
-import com.litechmeg.sabocale.view.adapter.TermListArrayAdapter;
+import com.litechmeg.sabocale.component.adapter.MainTabPagerAdapter;
+import com.litechmeg.sabocale.component.adapter.TermListArrayAdapter;
 
 import java.io.BufferedReader;
 import java.io.IOException;

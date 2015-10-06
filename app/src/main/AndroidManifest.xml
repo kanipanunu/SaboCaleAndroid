@@ -3,7 +3,7 @@
     package="com.litechmeg.sabocale" >
 
     <application
-        android:name="com.activeandroid.app.Application"
+        android:name=".SaboCaleApplication"
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
@@ -15,7 +15,7 @@
             android:name="AA_DB_VERSION"
             android:value="2" />
         <activity
-            android:name=".view.activity.StartActivity"
+            android:name=".component.activity.StartActivity"
             android:label="@string/title_activity_main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,26 +23,26 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.CalendarActivity"
+            android:name=".component.activity.CalendarActivity"
             android:label="@string/title_activity_calendar"/>
         <activity
-            android:name=".view.activity.MainActivity"
+            android:name=".component.activity.MainActivity"
             android:label="@string/title_activity_day_attendance"/>
         <activity
-            android:name=".view.activity.KamokuListActivity"
+            android:name=".component.activity.KamokuListActivity"
             android:label="@string/title_activity_kamoku_list"/>
         <activity
-            android:name=".view.activity.SettingsActivity"
+            android:name=".component.activity.SettingsActivity"
             android:label="@string/title_activity_day_settings"/>
 
         <activity
-            android:name=".view.activity.EditActivity"
+            android:name=".component.activity.EditActivity"
             android:label="@string/title_activity_edit"/>
         <activity
-            android:name=".view.activity.AttendanceListActivity"
+            android:name=".component.activity.AttendanceListActivity"
             android:label="@string/title_activity_attendance_list"/>
         <activity
-            android:name=".view.activity.DayAttendanceActivity"
+            android:name=".component.activity.DayAttendanceActivity"
             android:label="@string/title_activity_day_attendance"/>
     </application>
 

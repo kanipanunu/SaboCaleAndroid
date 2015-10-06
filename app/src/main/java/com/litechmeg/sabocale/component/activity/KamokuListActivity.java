@@ -1,15 +1,17 @@
-package com.litechmeg.sabocale.view.fragment;
+package com.litechmeg.sabocale.component.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -19,16 +21,20 @@ import android.widget.TextView;
 import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Kamoku;
-import com.litechmeg.sabocale.view.adapter.KamokuListArrayAdapter;
-import com.litechmeg.sabocale.view.activity.AttendanceListActivity;
+import com.litechmeg.sabocale.model.Term;
+import com.litechmeg.sabocale.util.IntentUtils;
+import com.litechmeg.sabocale.util.PrefUtils;
+import com.litechmeg.sabocale.component.adapter.KamokuListArrayAdapter;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 
 /**
- * Created by megukanipan on 2015/04/23.
+ * 科目のリストを表示する画面
  */
-public class KamokuListFragment extends Fragment{
+public class KamokuListActivity extends AppCompatActivity {
 
     EditText editText;
 
@@ -36,28 +42,30 @@ public class KamokuListFragment extends Fragment{
     ListView listview;
     KamokuListArrayAdapter adapter;
 
+    long termId;
+    Term term;
 
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // 第３引数のbooleanは"container"にreturnするViewを追加するかどうか
-        //trueにすると最終的なlayoutに再度、同じView groupが表示されてしまうのでfalseでOKらしい
-        View v=inflater.inflate(R.layout.activity_kamoku_list, null, false);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_kamoku_list);
 
-        SharedPreferences pref = getActivity().getSharedPreferences("TermSelect", getActivity().MODE_PRIVATE);
-
-        listview = (ListView) v.findViewById(R.id.listView1);
-
-        final long termId=pref.getLong("TermId",0);
+        termId = PrefUtils.getTermId(this);
+        term = Term.get(termId);
 
         // Adapterの設定
-        adapter = new KamokuListArrayAdapter(getActivity(), R.layout.activity_kamoku_list, 0,termId, 1);
-        List<Kamoku> kamokus = Kamoku.getAll(termId);//
-        for (int i = 0; i < kamokus.size(); i++) {
-            kamokus.get(i).calculate(termId);
-            if (Attendance.getList(kamokus.get(i).getId(), termId).size() != 0) {
-                kamokus.get(i).delete();//ここがうまく働いていないかも
-                System.out.println(kamokus.get(i).name);
-                if (!kamokus.get(i).name.equals("free")) {
-                    adapter.add(kamokus.get(i));
+        adapter = new KamokuListArrayAdapter(this, R.layout.activity_kamoku_list, 0, termId, 1);
+
+        List<Kamoku> kamokus = Kamoku.getAll();
+        for (Kamoku kamoku : kamokus) {
+            kamoku.calculate(termId);
+
+            if (Attendance.getList(kamoku.getId(), termId).size() == 0) {//後で変数にする
+                Kamoku.delete(Kamoku.class, kamoku.getId());//ここがうまく働いていないかも
+                System.out.println(kamoku.name);
+
+                if (!kamoku.name.equals("free")) {
+                    adapter.add(kamoku);
                 }
             }
         }
@@ -74,12 +82,17 @@ public class KamokuListFragment extends Fragment{
         });
 
         // ListViewの設定
+        listview = (ListView) findViewById(R.id.listView1);
         listview.setAdapter(adapter);
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        listview.setOnItemClickListener(new OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> arg0, View parent, int position, long arg3) {
+
                 // dialog用のレイアウトを取得
-                inflater.inflate(R.layout.dialog_kamoku_detail, (ViewGroup) parent.findViewById(R.id.layout_Dialog));
+                parent = getLayoutInflater().inflate(R.layout.dialog_kamoku_detail,
+                        (ViewGroup) findViewById(R.id.layout_Dialog));
                 parent.setBackgroundColor(Color.rgb(0xff, 0xff, 0xff));
 
                 // Viewの関連付け
@@ -101,22 +114,24 @@ public class KamokuListFragment extends Fragment{
                 // lateButton.setVisibility(View.GONE);
 
                 // その科目の数を取ってくる
-
-                List<Attendance> attendances = Attendance.getList(kamoku.getId(), termId);
+                List<Attendance> attendances = dateLook(kamoku.getId());
 
                 kamokuCountText.setText("授業合計" + attendances.size() + "");// attendanceがnull？？
                 int absenceCount = 0;
                 int attend = 0;
                 int late = 0;
-                for (int i = 0; i < attendances.size(); i++) {
-                    if (attendances.get(i).status == Attendance.STATUS_ATTENDANCE) {
+                for (Attendance attendance : attendances) {
+                    if (attendance.status == 0) {
                         attend++;
-                    } else if (attendances.get(i).status == Attendance.STATUS_ABSENT) {
+                    } else if (attendance.status == 1) {
                         absenceCount++;
-                    } else if (attendances.get(i).status == Attendance.STATUS_LATE) {
+                    } else if (attendance.status == 2) {
                         late++;
+                    } else {
+
                     }
                 }
+
                 absenceCountText.setText("休んだ数" + (absenceCount + (late / 3)) + "");
                 attendCountText.setText("出席したかず" + attend + "");
                 sabori.setText(((attendances.size() / 3) - (absenceCount + (late / 3))) + "");
@@ -128,33 +143,34 @@ public class KamokuListFragment extends Fragment{
                 progressBar.setSecondaryProgress(absenceCount + late / 3 + attend);
 
                 // あらーとダイアログの生成
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                final AlertDialog dialog = alertDialogBuilder //
+                final AlertDialog dialog = new AlertDialog.Builder(KamokuListActivity.this) //
                         .setTitle("") // タイトルをセット
                         .setMessage(kamoku.name)// メッセージをセット
                         .setView(parent) // Viewをセット
                         .show(); // アラートダイアログの表示
-                intentButton.setOnClickListener(new View.OnClickListener() {
+
+                intentButton.setOnClickListener(new OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(getActivity(), AttendanceListActivity.class);
-                        intent.putExtra("め", kamoku.getId());
+                        Intent intent = new Intent(KamokuListActivity.this, AttendanceListActivity.class);
+                        intent.putExtra(IntentUtils.KEY_KAMOKU_ID, kamoku.getId());
                         startActivity(intent);
+
                         dialog.dismiss();
                     }
                 });
             }
 
         });
-        listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        listview.setOnItemLongClickListener(new OnItemLongClickListener() {
 
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View parent, int position, long arg3) {
                 final Kamoku kamoku = adapter.getItem(position);
 
-                Intent intent = new Intent(getActivity(), AttendanceListActivity.class);
-                intent.putExtra("め", kamoku.getId());
+                Intent intent = new Intent(KamokuListActivity.this, AttendanceListActivity.class);
+                intent.putExtra(IntentUtils.KEY_KAMOKU_ID, kamoku.getId());
                 startActivity(intent);
 
                 return false;
@@ -162,7 +178,28 @@ public class KamokuListFragment extends Fragment{
 
         });
 
-        return v;
-
     }
+
+    public List<Attendance> dateLook(long x) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(term.dateStart);
+
+        List<Attendance> attendances = new ArrayList<Attendance>();
+
+        while (calendar.getTimeInMillis() <= term.dateEnd) {
+            attendances.addAll(Attendance.get(calendar.getTimeInMillis(), x, termId));
+            calendar.add(Calendar.DATE, 1);
+        }
+
+        return attendances;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.kamoku_list, menu);
+        return true;
+    }
+
 }

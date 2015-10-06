@@ -1,4 +1,4 @@
-package com.litechmeg.sabocale.view.fragment;
+package com.litechmeg.sabocale.component.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.litechmeg.sabocale.R;
-import com.litechmeg.sabocale.view.activity.DayAttendanceActivity;
+import com.litechmeg.sabocale.component.activity.DayAttendanceActivity;
 
 import org.kazzz.view.calendar.CalendarSelectionEvent;
 import org.kazzz.view.calendar.CalendarView;

@@ -1,4 +1,4 @@
-package com.litechmeg.sabocale.view.adapter;
+package com.litechmeg.sabocale.component.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.litechmeg.sabocale.R;
-import com.litechmeg.sabocale.model.Kamoku;
 import com.litechmeg.sabocale.model.Term;
 
 /**
