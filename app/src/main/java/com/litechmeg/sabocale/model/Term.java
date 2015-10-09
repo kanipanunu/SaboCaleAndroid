@@ -19,7 +19,7 @@ public class Term extends Model {
 
     @Column(name = "dateStart")
     public long dateStart;
-    
+
     @Column(name = "dateEnd")
     public long dateEnd;
 
@@ -48,7 +48,7 @@ public class Term extends Model {
         return query().where("name=?", name).executeSingle();
     }
 
-    public static From query(){
+    public static From query() {
         return new Select().from(Term.class);
     }
 }

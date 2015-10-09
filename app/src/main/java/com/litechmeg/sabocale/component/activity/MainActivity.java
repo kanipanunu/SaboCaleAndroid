@@ -1,9 +1,8 @@
-package com.litechmeg.sabocale.view.activity;
+package com.litechmeg.sabocale.component.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -32,9 +31,10 @@ import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Kamoku;
 import com.litechmeg.sabocale.model.Subject;
 import com.litechmeg.sabocale.model.Term;
-import com.litechmeg.sabocale.util.AttendanceAsyncTask;
-import com.litechmeg.sabocale.view.adapter.MainTabPagerAdapter;
-import com.litechmeg.sabocale.view.adapter.TermListArrayAdapter;
+import com.litechmeg.sabocale.task.AttendanceAsyncTask;
+import com.litechmeg.sabocale.util.PrefUtils;
+import com.litechmeg.sabocale.component.adapter.MainTabPagerAdapter;
+import com.litechmeg.sabocale.component.adapter.TermListArrayAdapter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -59,7 +59,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     Calendar calendar;
     String date;
 
-    SharedPreferences pref;
     Term term;
 
     @Override
@@ -67,9 +66,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day_attendance);
 
-        // FIXME SPConfig内の変数に置き換える
-        pref = getSharedPreferences("TermSelect", MODE_PRIVATE);
-        term = Term.get(pref.getLong("TermId", 1));
+        term = Term.get(PrefUtils.getTermId(this));
 
         /**
          * テスト
@@ -131,11 +128,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final Term term = termAdapter.getItem(position);
-                       SharedPreferences.Editor editor = pref.edit();
-                       // FIXME SPConfig内の変数に置き換える
-                       editor.putLong("TermId", term.getId());
-                       editor.apply();
-                       Log.d("ターム選択", term.name);
+                PrefUtils.setTermId(MainActivity.this, term.getId());
+                Log.d("ターム選択", term.name);
                 termListView.setAdapter(termAdapter);
             }
         });
@@ -237,6 +231,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                     Log.d("", "End: " + year2 + "," + month2 + "," + date2);
 
                     term.save();
+                    PrefUtils.setTermId(MainActivity.this, term.getId());
+
                     ProgressDialog asyncTaskDialog = new ProgressDialog(MainActivity.this);
                     asyncTaskDialog.setTitle("時間割のよみこみをしています。");
                     asyncTaskDialog.setMessage("保存中…");
@@ -246,13 +242,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
                     AttendanceAsyncTask asyncTask = new AttendanceAsyncTask(getApplicationContext(), term, asyncTaskDialog);
                     asyncTask.execute("");
+
                     dialog.dismiss();
-
-                    asyncTaskDialog.show();
-
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.putLong("TermId", term.getId());
-                    editor.apply();
                 }
 
             }
@@ -280,7 +271,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
                     // もし空白でなければ(空白はスルー)
                     if (!jikan[i].equals("")) {
-                        kamoku = Kamoku.get(jikan[i],term.getId());
+                        kamoku = Kamoku.get(jikan[i], term.getId());
                         // 名前が jikan[j] のKamokuをロード
                         // なければ新しく作る
                         if (kamoku == null) {
@@ -291,7 +282,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                         }
                         Log.d(kamoku.name, jikan[i]);
                     } else {
-                        kamoku = Kamoku.get("free",term.getId());
+                        kamoku = Kamoku.get("free", term.getId());
                         if (kamoku == null) {
                             kamoku = new Kamoku();
                             kamoku.name = "free";

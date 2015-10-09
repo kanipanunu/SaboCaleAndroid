@@ -37,7 +37,7 @@ public class Attendance extends Model {
     @Column(name = "term")
     public long termId;
 
-    public Attendance(){
+    public Attendance() {
         super();
     }
 
@@ -65,7 +65,7 @@ public class Attendance extends Model {
         return query().where("kamokuId=? and term=?", kamokuId, termId).execute();
     }
 
-    public static From query(){
+    public static From query() {
         return new Select().from(Attendance.class);
     }
 

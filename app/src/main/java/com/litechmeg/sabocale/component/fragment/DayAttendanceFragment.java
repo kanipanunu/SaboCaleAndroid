@@ -1,12 +1,11 @@
-package com.litechmeg.sabocale.view.activity;
+package com.litechmeg.sabocale.component.fragment;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,8 @@ import android.widget.TextView;
 import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Attendance;
 import com.litechmeg.sabocale.model.Kamoku;
-import com.litechmeg.sabocale.view.adapter.KamokuListArrayAdapter;
+import com.litechmeg.sabocale.component.adapter.KamokuListArrayAdapter;
+import com.litechmeg.sabocale.util.PrefUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,9 +29,9 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by megukanipan on 2015/06/13.
+ * Created by megukanipan on 2015/04/19.
  */
-public class DayAttendanceActivity extends Activity {
+public class DayAttendanceFragment extends Fragment {
 
     TextView dateTextView;
     TextView dayOfWeekTextView;
@@ -42,34 +42,30 @@ public class DayAttendanceActivity extends Activity {
 
     long date;
     Calendar calendar;
-    Long termId;
-
-    private OnPeriodClickListener OPCListener;
+    long termId;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        super.setContentView(R.layout.fragment_day_attendance);
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // 第３引数のbooleanは"container"にreturnするViewを追加するかどうか
+        // trueにすると最終的なlayoutに再度、同じView groupが表示されてしまうのでfalseでOKらしい
 
-        getPreference();
+        termId = PrefUtils.getTermId(getActivity());
 
+        View v = inflater.inflate(R.layout.fragment_day_attendance, container, false);
 
         // Viewを関連付け
-        dateTextView = (TextView) findViewById(R.id.date);
-        dayOfWeekTextView = (TextView) findViewById(R.id.DayOfWeek);
-        kamokuListView = (ListView) findViewById(R.id.listView1);
+        dateTextView = (TextView) v.findViewById(R.id.date);
+        dayOfWeekTextView = (TextView) v.findViewById(R.id.DayOfWeek);
+        kamokuListView = (ListView) v.findViewById(R.id.listView1);
 
         calendar = Calendar.getInstance();
-        Intent i = getIntent();
-        calendar.setTimeInMillis(i.getLongExtra("selection",calendar.getTimeInMillis()));
-
         // 日付を文字に変換
-        date = (calendar.getTimeInMillis()) - (calendar.getTimeInMillis()) % (3600000 * 24);
-        Log.d("選択", "" + date);
+        date = (calendar.getTimeInMillis()) - (calendar.getTimeInMillis() % (1000 * 3600 * 24));
+        Log.d("今日", "" + date);
         setDateText(); // dateTextViewに文字をセット
 
         // ListView関連
-        adapter = new KamokuListArrayAdapter(DayAttendanceActivity.this, R.layout.activity_kamoku_list, date, termId, 0);
+        adapter = new KamokuListArrayAdapter(getActivity(), R.layout.activity_kamoku_list, date, termId, 0);
         setDataToAdapter();
         kamokuListView.setAdapter(adapter);
 
@@ -77,13 +73,15 @@ public class DayAttendanceActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> arg0, View parent, final int position, long arg3) {
                 // dialog用のレイアウトを取得
-                View dialogView = getLayoutInflater().inflate(R.layout.dialog_subject_edit, null);
+                View dialogView = inflater.inflate(R.layout.dialog_subject_edit, null);
                 dialogView.setBackgroundColor(Color.rgb(0xff, 0xff, 0xff));
 
                 // Viewの関連付け
+
                 // 現在位置のKamokuを取得して名前を表示
                 final Kamoku kamoku = adapter.getItem(position);
                 final Attendance attendance = Attendance.get(date, position, termId);
+
                 final EditText editKamokuName = (EditText) dialogView.findViewById(R.id.editText1);
                 final Button ariButton = (Button) dialogView.findViewById(R.id.arikoma);
                 final Button nashiButton = (Button) dialogView.findViewById(R.id.akikoma);
@@ -100,7 +98,7 @@ public class DayAttendanceActivity extends Activity {
                 }
 
                 // あらーとダイアログの生成
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DayAttendanceActivity.this)
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity())
                         .setTitle("変更") // タイトルをセット
                         .setMessage(kamoku.name)// メッセージをセット
                         .setView(dialogView); // Viewをセット
@@ -168,13 +166,11 @@ public class DayAttendanceActivity extends Activity {
 
             }
         });
+        return v;
     }
 
 
     public void setDataToAdapter() {
-
-        //しぇあぷりを取得する
-        getPreference();
 
         List<Attendance> attendances = Attendance.getAll(date, termId);
 
@@ -190,27 +186,10 @@ public class DayAttendanceActivity extends Activity {
         adapter.addAll(kamokus);
     }
 
-    public interface OnPeriodClickListener {
-        public void OnPeriodClickListener(Uri uri);
-    }
-
-    public String calendarToDateFormat(Calendar calendar) {
-        return String.format("%04d%02d%02d", // yyyyMMdd形式に表示
-                calendar.get(Calendar.YEAR), // 年
-                calendar.get(Calendar.MONTH), // 月
-                calendar.get(Calendar.DAY_OF_MONTH)); // 日
-    }
-
     public void setDateText() {
         dateTextView.setText(calendar.get(Calendar.YEAR) + "年" + (calendar.get(Calendar.MONTH) + 1) + "月"
                 + calendar.get(Calendar.DAY_OF_MONTH) + "日");
         // 曜日を表示
         dayOfWeekTextView.setText(new SimpleDateFormat("E", Locale.JAPAN).format(calendar.getTime()));
     }
-
-    public void getPreference() {
-        SharedPreferences pref = getSharedPreferences("TermSelect", MODE_PRIVATE);
-        termId = pref.getLong("TermId", 0);
-    }
-
 }

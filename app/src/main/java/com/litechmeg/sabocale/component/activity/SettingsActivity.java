@@ -1,4 +1,4 @@
-package com.litechmeg.sabocale.view.activity;
+package com.litechmeg.sabocale.component.activity;
 
 import java.util.Calendar;
 
@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.litechmeg.sabocale.R;
 import com.litechmeg.sabocale.model.Term;
-import com.litechmeg.sabocale.view.adapter.KamokuListArrayAdapter;
+import com.litechmeg.sabocale.component.adapter.KamokuListArrayAdapter;
 
 /**
  * 時間割を読み込む画面
@@ -40,10 +40,10 @@ public class SettingsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting_cal);
     }
-        /**
-         * 時間割ファイルをロードする(もしかしたら不要になるかも)
-         */
 
+    /**
+     * 時間割ファイルをロードする(もしかしたら不要になるかも)
+     */
     public void startsellect(View v) {
         Intent intent = new Intent(SettingsActivity.this, CalendarActivity.class);
         intent.putExtra("め", "setting");
@@ -119,7 +119,6 @@ public class SettingsActivity extends Activity {
 
 
     }
-
 
 
 }

@@ -1,4 +1,4 @@
-package com.litechmeg.sabocale.view.fragment;
+package com.litechmeg.sabocale.component.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,7 +11,7 @@ import com.litechmeg.sabocale.R;
 /**
  * Created by megukanipan on 2015/04/23.
  */
-public class SettingsView extends Fragment{
+public class SettingsFragment extends Fragment{
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // 第３引数のbooleanは"container"にreturnするViewを追加するかどうか
